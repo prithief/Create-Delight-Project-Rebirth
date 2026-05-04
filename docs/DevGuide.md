@@ -30,14 +30,7 @@ devtool.bat
 
 开发工具优先使用仓库内置的 `scripts/bin/packwiz.exe`。
 
-直接命令模式：
-
-```powershell
-devtool.bat check
-devtool.bat refresh
-devtool.bat list
-devtool.bat update --all
-```
+开发者日常操作优先使用交互式菜单，不需要记忆 packwiz 参数命令。
 
 ## 仓库结构原则
 
@@ -61,75 +54,22 @@ AI 相关共享工作流放在：
 
 ```text
 docs/REPOSITORY_STRUCTURE.md
-docs/PACKWIZ_WORKFLOW.md
 ```
 
-## packwiz 常用操作
+## mod 管理方式
 
-检查仓库：
+mod 本体由 packwiz 元数据管理，但开发者一般不直接手写命令。需要添加、更新、下载或生成 mod 清单时，运行：
 
 ```powershell
-devtool.bat check
+devtool.bat
 ```
 
-刷新索引：
-
-```powershell
-devtool.bat refresh
-```
-
-查看当前 packwiz 管理文件：
-
-```powershell
-devtool.bat list
-```
-
-更新全部外部文件：
-
-```powershell
-devtool.bat update --all
-```
-
-添加项目：
-
-```powershell
-devtool.bat add-modrinth <project>
-devtool.bat add-curseforge <project>
-devtool.bat add-github <owner/repo-or-url>
-devtool.bat add-url <url>
-```
-
-下载 packwiz 管理的文件到本地：
-
-```powershell
-devtool.bat download-files
-```
-
-该命令只下载 `*.pw.toml` 中声明的文件，不删除本地无关文件。需要覆盖已有文件时：
-
-```powershell
-devtool.bat download-files -Force
-```
-
-扫描临时放入 `mods/` 的 jar 并生成 CurseForge meta：
-
-```powershell
-devtool.bat detect-curseforge
-```
-
-注意：这是迁移/导入阶段使用的实验流程。执行后必须检查生成的 `*.pw.toml` 和 `index.toml`，不要提交 `mods/*.jar`。
-
-生成 Markdown / CSV 模组清单：
-
-```powershell
-devtool.bat modlist
-```
-
-默认输出到 `docs/generated/`。它会读取 `*.pw.toml`，也会识别本地临时存在的 `mods/*.jar`。
+菜单里已经封装了仓库检查、刷新索引、添加项目、更新项目、下载本地文件、扫描临时 jar 和生成 mod 清单等操作。
+参数式命令主要给 AI agent、自动化脚本或维护者排查问题使用，相关细节放在 `.agents/skills/packwiz-modpack/SKILL.md` 和 `docs/PACKWIZ_WORKFLOW.md`。
 
 ## 关于 modinstaller / 同步器
 
-部分 mod 同步器会按照 manifest 清理目录，删除不在清单中的文件。开发仓库中优先使用 `devtool.bat download-files`，因为它不会删除无关文件。
+部分 mod 同步器会按照 manifest 清理目录，删除不在清单中的文件。开发仓库中优先使用开发工具菜单里的“下载 packwiz 管理文件到本地”，因为它不会删除无关文件。
 
 如果确实需要使用会清理文件的同步器，先确认：
 

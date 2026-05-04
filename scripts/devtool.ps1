@@ -70,7 +70,7 @@ Create Delight Project Rebirth 开发工具
   devtool.bat add-url <url> [packwiz args...]
   devtool.bat add-github <owner/repo|url> [packwiz args...]
   devtool.bat download-files [-Force]
-  devtool.bat detect-curseforge [-Yes]
+  devtool.bat detect-curseforge [-Yes]  # 迁移专用，非必要不使用
   devtool.bat modlist [-OutputDir docs/generated]
   devtool.bat serve [-p port] [packwiz args...]
   devtool.bat export-modrinth [packwiz args...]
@@ -130,7 +130,7 @@ function Start-DevMenu {
     Write-Host "  9. 添加直链 URL"
     Write-Host " 10. 添加 GitHub Release 项目"
     Write-Host " 11. 下载 packwiz 管理文件到本地（不清理无关文件）"
-    Write-Host " 12. 扫描 mods 目录生成 CurseForge meta"
+    Write-Host " 12. 扫描 mods 目录生成 CurseForge meta（迁移专用，非必要不使用）" -ForegroundColor Yellow
     Write-Host " 13. 生成 modlist 清单"
     Write-Host " 14. 启动 packwiz 本地服务器"
     Write-Host " 15. 导出 Modrinth .mrpack"
@@ -229,6 +229,7 @@ function Start-DevMenu {
         }
         "12" {
           Write-Warn "此操作会扫描 mods/*.jar 并尝试生成 CurseForge meta。"
+          Write-Warn "这是迁移阶段兜底工具，非必要不使用；执行前请确认本地改动已提交或备份。"
           Write-Warn "执行后请检查生成的 *.pw.toml 和 index.toml，不要提交无关 jar。"
           $confirm = Read-Host "确认执行？输入 DETECT 继续"
           if ($confirm -eq "DETECT") {
@@ -773,6 +774,7 @@ function Invoke-CurseForgeDetect {
   if (-not $yes) {
     Write-Warn "即将执行 packwiz curseforge detect。"
     Write-Warn "它会扫描 mods/*.jar 并尝试生成 CurseForge meta；执行后必须人工检查。"
+    Write-Warn "这是迁移阶段兜底工具，非必要不使用；执行前请确认本地改动已提交或备份。"
     $confirm = Read-Host "输入 DETECT 继续"
     if ($confirm -ne "DETECT") {
       Write-Warn "已取消。"
