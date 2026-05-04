@@ -438,6 +438,9 @@ function Read-PackwizMeta {
     if ($line -match '^\s*file\s*=\s*"([^"]+)"') {
       $meta.File = $matches[1]
     }
+    elseif ($line -match '^\s*filename\s*=\s*"([^"]+)"') {
+      $meta.File = $matches[1]
+    }
     elseif ($line -match '^\s*name\s*=\s*"([^"]+)"') {
       $meta.Name = $matches[1]
     }
@@ -647,7 +650,7 @@ function Write-ModList {
       $name = "[$name]($($item.Url))"
     }
 
-    $md.Add("| $index | $name | `$($item.File)` | $($item.Side) | $($item.Source) | $($item.Version) | $($item.ModId) |")
+    $md.Add("| $index | $name | ``$($item.File)`` | $($item.Side) | $($item.Source) | $($item.Version) | $($item.ModId) |")
     $index++
   }
 
