@@ -1,0 +1,17 @@
+.editorconfig
+.gitattributes
+.github/
+.agents/
+.gitignore
+.tmp*/
+**/.gitkeep
+README.md
+LICENSE
+AGENTS.md
+docs/
+devtool.bat
+scripts/
+start.bat
+start.sh
+variables.txt
+server-icon.png

@@ -1,0 +1,5 @@
+hash-format = "sha256"
+
+[[files]]
+file = "icon.png"
+hash = "fe45547e7d523993ca305d0deb822aa38f93b90da3c189ee2e1afae53df21ca1"

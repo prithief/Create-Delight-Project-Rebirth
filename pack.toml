@@ -1,0 +1,13 @@
+name = "Create-Delight-Project-Rebirth"
+author = "JSI"
+version = "v0.1.0"
+pack-format = "packwiz:1.1.0"
+
+[index]
+file = "index.toml"
+hash-format = "sha256"
+hash = "93c68849af074168342d1d545e4c13f148469d6806073b599a274345997ed883"
+
+[versions]
+minecraft = "1.21.1"
+neoforge = "21.1.228"
