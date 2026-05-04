@@ -1,0 +1,97 @@
+name: Bug Report
+description: 提交问题 / Report bug
+labels: bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # 检查整合包版本 / Check if modpack version is newest
+        - 请先确认自己使用的是当前项目的最新测试版或发布版。
+        - 如果不是最新版本，请先更新后再确认问题是否仍然存在。
+  - type: input
+    id: modpack-version
+    attributes:
+      label: 整合包版本 / Modpack Version
+      description: 请填写你遇到问题时使用的整合包版本。
+      placeholder: v0.x.x
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        # 确认是否修改整合包 / Make sure the modpack was not modified
+        - 请确认自己是否对整合包内的 mod、配置、KubeJS 脚本、资源文件等做过增删或修改。
+        - 如果是服务器游玩中的问题，请先确认服务器端是否使用了同版本整合包，且没有额外改动。
+        - 排查时做过的临时修改请在额外信息里说明。
+  - type: input
+    id: modifications
+    attributes:
+      label: 修改情况 / Modifications
+      description: 请填写“没有修改”或具体修改内容。
+      placeholder: 没有修改 / 修改了 xxx
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        # 错误日志 / Log
+        - 如果是崩溃或明显异常，请收集 `latest.log`、崩溃报告或服务端日志。
+        - 推荐使用 https://mclo.gs/ 保存日志，并把分享链接贴在下面。
+  - type: input
+    id: error-log
+    attributes:
+      label: 错误报告链接 / Error log link
+      description: 在这里贴上你的报错分享链接。
+      placeholder: https://mclo.gs/...
+    validations:
+      required: false
+
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: 描述 bug 现象 / Describe the bug
+      description: 简明说明观察到的异常现象。
+      placeholder: 请清晰描述观察到的异常现象...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: 复现方法 / To reproduce
+      description: 按顺序列出复现这个 bug 的步骤。
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: 预期表现 / Expected behavior
+      description: 简明说明没有 bug 时你预期应该发生什么。
+      placeholder: 我预期应该发生...
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: 截图 / Screenshots
+      description: 如果可能，贴上截图帮助解释问题。
+      placeholder: https://example.com/screenshot.jpg
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: 额外信息 / Additional context
+      description: 在这里补充你认为有必要的额外信息。
+      placeholder: 例如：仅在服务器出现 / 特定装备触发 / 单人和多人表现不同...
+    validations:
+      required: false
