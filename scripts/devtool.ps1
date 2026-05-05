@@ -15,6 +15,8 @@ param(
     "add-github",
     "remove-mod",
     "install-files",
+    "install-files-headless",
+    "install-files-retry",
     "download-files",
     "detect-curseforge",
     "modlist",
@@ -73,7 +75,9 @@ Create Delight Project Rebirth 开发工具
   devtool.bat add-url <url> [packwiz args...]
   devtool.bat add-github <owner/repo|url> [packwiz args...]
   devtool.bat remove-mod <name|metadata-file> [packwiz args...]
-  devtool.bat install-files [packwiz-installer args...]
+  devtool.bat install-files [packwiz-installer args...]           # GUI 模式，适合本机开发
+  devtool.bat install-files-headless [packwiz-installer args...]  # 默认使用 -g -s both
+  devtool.bat install-files-retry [attempts] [delay-seconds]
   devtool.bat download-files [-Force] [-CurseForgeApiKey <key>] [-CurseForgeApiBaseUrl <url>]
   devtool.bat detect-curseforge [-Yes]  # 迁移专用，非必要不使用
   devtool.bat modlist [-OutputDir docs/generated]
@@ -135,14 +139,16 @@ function Start-DevMenu {
     Write-Host "  9. 添加直链 URL"
     Write-Host " 10. 添加 GitHub Release 项目"
     Write-Host " 11. 移除 packwiz 管理文件"
-    Write-Host " 12. 用 packwiz-installer 安装文件到本地"
-    Write-Host " 13. 下载直链 packwiz 管理文件到本地（不清理无关文件）"
-    Write-Host " 14. 扫描 mods 目录生成 CurseForge meta（迁移专用，非必要不使用）" -ForegroundColor Yellow
-    Write-Host " 15. 生成 modlist 清单"
-    Write-Host " 16. 启动 packwiz 本地服务器"
-    Write-Host " 17. 导出 Modrinth .mrpack"
-    Write-Host " 18. 导出 CurseForge .zip"
-    Write-Host " 19. 执行自定义 packwiz 命令"
+    Write-Host " 12. 用 packwiz-installer 安装文件到本地（GUI）"
+    Write-Host " 13. 用 packwiz-installer 安装文件到本地（无 GUI）"
+    Write-Host " 14. 重试安装文件到本地（无 GUI）"
+    Write-Host " 15. 下载直链 packwiz 管理文件到本地（不清理无关文件）"
+    Write-Host " 16. 扫描 mods 目录生成 CurseForge meta（迁移专用，非必要不使用）" -ForegroundColor Yellow
+    Write-Host " 17. 生成 modlist 清单"
+    Write-Host " 18. 启动 packwiz 本地服务器"
+    Write-Host " 19. 导出 Modrinth .mrpack"
+    Write-Host " 20. 导出 CurseForge .zip"
+    Write-Host " 21. 执行自定义 packwiz 命令"
     Write-Host "  0. 退出"
     Write-Host ""
 
@@ -172,7 +178,7 @@ function Start-DevMenu {
           Pause-Menu
         }
         "5" {
-          Invoke-Packwiz @("update", "--all")
+          Invoke-PackwizAndRefresh @("update", "--all")
           Pause-Menu
         }
         "6" {
@@ -181,7 +187,7 @@ function Start-DevMenu {
             Write-Warn "未输入名称。"
           }
           else {
-            Invoke-Packwiz (@("update", $name) + (Read-PackwizExtraArgs))
+            Invoke-PackwizAndRefresh (@("update", $name) + (Read-PackwizExtraArgs))
           }
           Pause-Menu
         }
@@ -191,7 +197,7 @@ function Start-DevMenu {
             Write-Warn "未输入项目。"
           }
           else {
-            Invoke-Packwiz (@("modrinth", "add", $project) + (Read-PackwizExtraArgs))
+            Invoke-PackwizAndRefresh (@("modrinth", "add", $project) + (Read-PackwizExtraArgs))
           }
           Pause-Menu
         }
@@ -201,7 +207,7 @@ function Start-DevMenu {
             Write-Warn "未输入项目。"
           }
           else {
-            Invoke-Packwiz (@("curseforge", "add", $project) + (Read-PackwizExtraArgs))
+            Invoke-PackwizAndRefresh (@("curseforge", "add", $project) + (Read-PackwizExtraArgs))
           }
           Pause-Menu
         }
@@ -211,7 +217,7 @@ function Start-DevMenu {
             Write-Warn "未输入 URL。"
           }
           else {
-            Invoke-Packwiz (@("url", "add", $url) + (Read-PackwizExtraArgs))
+            Invoke-PackwizAndRefresh (@("url", "add", $url) + (Read-PackwizExtraArgs))
           }
           Pause-Menu
         }
@@ -221,7 +227,7 @@ function Start-DevMenu {
             Write-Warn "未输入项目。"
           }
           else {
-            Invoke-Packwiz (@("github", "add", $project) + (Read-PackwizExtraArgs))
+            Invoke-PackwizAndRefresh (@("github", "add", $project) + (Read-PackwizExtraArgs))
           }
           Pause-Menu
         }
@@ -231,8 +237,7 @@ function Start-DevMenu {
             Write-Warn "未输入名称。"
           }
           else {
-            Invoke-Packwiz (@("remove", $name) + (Read-PackwizExtraArgs))
-            Invoke-Packwiz @("refresh")
+            Invoke-PackwizAndRefresh (@("remove", $name) + (Read-PackwizExtraArgs))
           }
           Pause-Menu
         }
@@ -241,6 +246,23 @@ function Start-DevMenu {
           Pause-Menu
         }
         "13" {
+          Invoke-PackwizInstallerHeadless (Read-PackwizExtraArgs "额外 packwiz-installer 参数，留空表示无")
+          Pause-Menu
+        }
+        "14" {
+          $attempts = Read-Host "最大尝试次数，留空使用 5"
+          $delay = Read-Host "失败后等待秒数，留空使用 10"
+          $args = @()
+          if (-not [string]::IsNullOrWhiteSpace($attempts)) {
+            $args += $attempts
+          }
+          if (-not [string]::IsNullOrWhiteSpace($delay)) {
+            $args += $delay
+          }
+          Invoke-PackwizInstallerRetry $args
+          Pause-Menu
+        }
+        "15" {
           $force = Read-Host "是否覆盖已存在文件？y/N"
           $args = @()
           if ($force -match "^(y|yes)$") {
@@ -249,7 +271,7 @@ function Start-DevMenu {
           Download-PackFiles $args
           Pause-Menu
         }
-        "14" {
+        "16" {
           Write-Warn "此操作会扫描 mods/*.jar 并尝试生成 CurseForge meta。"
           Write-Warn "这是迁移阶段兜底工具，非必要不使用；执行前请确认本地改动已提交或备份。"
           Write-Warn "执行后请检查生成的 *.pw.toml 和 index.toml，不要提交无关 jar。"
@@ -263,7 +285,7 @@ function Start-DevMenu {
           }
           Pause-Menu
         }
-        "15" {
+        "17" {
           $outputDir = Read-Host "输出目录，留空使用 docs/generated"
           if ([string]::IsNullOrWhiteSpace($outputDir)) {
             Write-ModList @()
@@ -273,7 +295,7 @@ function Start-DevMenu {
           }
           Pause-Menu
         }
-        "16" {
+        "18" {
           $port = Read-Host "端口，留空使用 packwiz 默认值"
           if ([string]::IsNullOrWhiteSpace($port)) {
             Invoke-Packwiz @("serve")
@@ -283,7 +305,7 @@ function Start-DevMenu {
           }
           Pause-Menu
         }
-        "17" {
+        "19" {
           $output = Read-Host "输出文件，留空使用 packwiz 默认值"
           if ([string]::IsNullOrWhiteSpace($output)) {
             Invoke-Packwiz (@("modrinth", "export") + (Read-PackwizExtraArgs))
@@ -293,7 +315,7 @@ function Start-DevMenu {
           }
           Pause-Menu
         }
-        "18" {
+        "20" {
           $side = Read-Host "导出侧 client/server，留空使用 packwiz 默认值"
           $args = @("curseforge", "export")
           if (-not [string]::IsNullOrWhiteSpace($side)) {
@@ -303,7 +325,7 @@ function Start-DevMenu {
           Invoke-Packwiz $args
           Pause-Menu
         }
-        "19" {
+        "21" {
           $custom = Read-PackwizExtraArgs "packwiz 命令参数"
           if ($custom.Count -eq 0) {
             Write-Warn "未输入命令。"
@@ -429,6 +451,13 @@ function Invoke-Packwiz {
   finally {
     Pop-Location
   }
+}
+
+function Invoke-PackwizAndRefresh {
+  param([string[]] $PackwizArgs)
+
+  Invoke-Packwiz $PackwizArgs
+  Invoke-Packwiz @("refresh")
 }
 
 function Get-RelativePath {
@@ -780,7 +809,7 @@ function Invoke-PackwizInstaller {
 
   Push-Location $RepoRoot
   try {
-    $args = @("-jar", $LocalPackwizInstallerBootstrap, ".\pack.toml") + $InstallerArgs
+    $args = @("-jar", $LocalPackwizInstallerBootstrap) + $InstallerArgs + @(".\pack.toml")
     Write-Info "执行：java $($args -join ' ')"
     & $java.Source @args
     if ($LASTEXITCODE -ne 0) {
@@ -792,6 +821,59 @@ function Invoke-PackwizInstaller {
   }
 
   Write-Success "packwiz-installer 已完成。下载的 mods/*.jar 会保留在本地并被 git 忽略。"
+}
+
+function Invoke-PackwizInstallerHeadless {
+  param([string[]] $InstallerArgs)
+
+  $effectiveInstallerArgs = @($InstallerArgs)
+  if ($effectiveInstallerArgs.Count -eq 0) {
+    $effectiveInstallerArgs = @("-g", "-s", "both")
+  }
+
+  Invoke-PackwizInstaller $effectiveInstallerArgs
+}
+
+function Invoke-PackwizInstallerRetry {
+  param([string[]] $RawArgs)
+
+  $attempts = 5
+  $delaySeconds = 10
+
+  if ($RawArgs.Count -ge 1 -and -not [string]::IsNullOrWhiteSpace($RawArgs[0])) {
+    if (-not [int]::TryParse($RawArgs[0], [ref] $attempts) -or $attempts -lt 1) {
+      throw "最大尝试次数必须是大于 0 的整数。"
+    }
+  }
+
+  if ($RawArgs.Count -ge 2 -and -not [string]::IsNullOrWhiteSpace($RawArgs[1])) {
+    if (-not [int]::TryParse($RawArgs[1], [ref] $delaySeconds) -or $delaySeconds -lt 0) {
+      throw "等待秒数必须是大于等于 0 的整数。"
+    }
+  }
+
+  $lastError = $null
+  for ($i = 1; $i -le $attempts; $i++) {
+    Write-Info "安装尝试 $i/$attempts"
+    try {
+      Invoke-PackwizInstallerHeadless @()
+      return
+    }
+    catch {
+      $lastError = $_
+      if ($i -ge $attempts) {
+        break
+      }
+
+      Write-Warn "安装失败：$($_.Exception.Message)"
+      if ($delaySeconds -gt 0) {
+        Write-Info "等待 $delaySeconds 秒后重试。"
+        Start-Sleep -Seconds $delaySeconds
+      }
+    }
+  }
+
+  throw $lastError
 }
 
 function Get-CurseForgeApiKey {
@@ -1158,26 +1240,31 @@ switch ($Command) {
     Invoke-Packwiz (@("list") + $Rest)
   }
   "update" {
-    Invoke-Packwiz (@("update") + $Rest)
+    Invoke-PackwizAndRefresh (@("update") + $Rest)
   }
   "add-modrinth" {
-    Invoke-Packwiz (@("modrinth", "add") + $Rest)
+    Invoke-PackwizAndRefresh (@("modrinth", "add") + $Rest)
   }
   "add-curseforge" {
-    Invoke-Packwiz (@("curseforge", "add") + $Rest)
+    Invoke-PackwizAndRefresh (@("curseforge", "add") + $Rest)
   }
   "add-url" {
-    Invoke-Packwiz (@("url", "add") + $Rest)
+    Invoke-PackwizAndRefresh (@("url", "add") + $Rest)
   }
   "add-github" {
-    Invoke-Packwiz (@("github", "add") + $Rest)
+    Invoke-PackwizAndRefresh (@("github", "add") + $Rest)
   }
   "remove-mod" {
-    Invoke-Packwiz (@("remove") + $Rest)
-    Invoke-Packwiz @("refresh")
+    Invoke-PackwizAndRefresh (@("remove") + $Rest)
   }
   "install-files" {
     Invoke-PackwizInstaller $Rest
+  }
+  "install-files-headless" {
+    Invoke-PackwizInstallerHeadless $Rest
+  }
+  "install-files-retry" {
+    Invoke-PackwizInstallerRetry $Rest
   }
   "download-files" {
     Download-PackFiles $Rest

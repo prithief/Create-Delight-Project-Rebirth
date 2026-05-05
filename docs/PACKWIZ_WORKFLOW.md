@@ -39,12 +39,12 @@ devtool.bat update --all
 ## 增删 Mod 开发流程
 
 添加、删除、更新 mod 都以 packwiz 元数据为准。不要把 `mods/*.jar` 当作源文件提交。
+`devtool.bat add-*`、`devtool.bat update` 和 `devtool.bat remove-mod` 会在操作成功后自动运行 `devtool.bat refresh`。
 
 添加 CurseForge mod：
 
 ```powershell
 devtool.bat add-curseforge <slug-or-url-or-project-id>
-devtool.bat refresh
 devtool.bat install-files
 devtool.bat check
 git status --short --untracked-files=all
@@ -54,7 +54,6 @@ git status --short --untracked-files=all
 
 ```powershell
 devtool.bat add-modrinth <slug-or-url-or-project-id>
-devtool.bat refresh
 devtool.bat install-files
 devtool.bat check
 git status --short --untracked-files=all
@@ -65,7 +64,6 @@ git status --short --untracked-files=all
 ```powershell
 devtool.bat add-url <download-url>
 devtool.bat add-github <owner/repo-or-url>
-devtool.bat refresh
 devtool.bat install-files
 devtool.bat check
 ```
@@ -74,7 +72,6 @@ devtool.bat check
 
 ```powershell
 devtool.bat remove-mod <name-or-metadata-file>
-devtool.bat refresh
 devtool.bat install-files
 devtool.bat check
 git status --short --untracked-files=all
@@ -86,7 +83,6 @@ git status --short --untracked-files=all
 
 ```powershell
 devtool.bat update <mod-slug>
-devtool.bat refresh
 devtool.bat install-files
 devtool.bat check
 ```
@@ -95,7 +91,6 @@ devtool.bat check
 
 ```powershell
 devtool.bat update --all
-devtool.bat refresh
 devtool.bat install-files
 devtool.bat check
 ```
@@ -115,7 +110,24 @@ git diff -- pack.toml index.toml mods
 devtool.bat install-files
 ```
 
-该命令使用内置的 `scripts/bin/packwiz-installer-bootstrap.jar`，会先刷新 packwiz 索引，再按 `pack.toml` 安装 `mods/*.jar` 等本地开发文件。它适合处理 `metadata:curseforge`，开发者不需要手动提供 CurseForge API Key。下载得到的 `mods/*.jar` 只作为本地开发文件保留，仍然由 `.gitignore` 忽略。
+该命令使用内置的 `scripts/bin/packwiz-installer-bootstrap.jar`，会先刷新 packwiz 索引，再按 `pack.toml` 安装 `mods/*.jar` 等本地开发文件。默认是 GUI 模式，适合本机开发；遇到需要手动下载的 CurseForge 文件时会弹出页面。下载得到的 `mods/*.jar` 只作为本地开发文件保留，仍然由 `.gitignore` 忽略。
+
+CI、服务器或无桌面环境使用无 GUI 模式：
+
+```powershell
+devtool.bat install-files-headless
+```
+
+该命令默认传入 `-g -s both`，只在终端输出手动下载链接，不会弹浏览器页面。
+
+如果下载过程中只有少量网络超时，可以使用重试安装：
+
+```powershell
+devtool.bat install-files-retry
+devtool.bat install-files-retry 5 10
+```
+
+第一个数字是最大尝试次数，第二个数字是失败后等待秒数；默认是 5 次、每次间隔 10 秒。packwiz-installer 会校验已存在文件，重跑时只会补缺或重试失败项。
 
 仅当元数据里有直链 `download.url`，也可以使用直链下载器：
 

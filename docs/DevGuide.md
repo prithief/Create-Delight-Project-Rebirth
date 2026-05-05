@@ -71,7 +71,7 @@ devtool.bat
 
 - 新增使用 `devtool.bat add-curseforge`、`devtool.bat add-modrinth`、`devtool.bat add-url` 或 `devtool.bat add-github`。
 - 删除使用 `devtool.bat remove-mod <name-or-metadata-file>`。
-- 修改后运行 `devtool.bat refresh` 和 `devtool.bat install-files`。
+- `add-*`、`update`、`remove-mod` 会自动刷新 `index.toml`；之后运行 `devtool.bat install-files`。无桌面环境使用 `devtool.bat install-files-headless`；网络不稳时使用 `devtool.bat install-files-retry`。
 - 提交 `mods/*.pw.toml`、`pack.toml`、`index.toml` 的变化，不提交 `mods/*.jar`。
 
 ## 关于 modinstaller / 同步器

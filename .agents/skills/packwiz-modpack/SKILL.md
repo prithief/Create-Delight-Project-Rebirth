@@ -33,6 +33,8 @@ devtool.bat add-url <url>
 devtool.bat add-github <owner/repo-or-url>
 devtool.bat remove-mod <name-or-metadata-file>
 devtool.bat install-files
+devtool.bat install-files-headless
+devtool.bat install-files-retry
 devtool.bat download-files
 devtool.bat detect-curseforge
 devtool.bat modlist
@@ -63,6 +65,8 @@ packwiz update --all
 5. Run `devtool.bat refresh`.
 6. Review `pack.toml`, `index.toml`, and any generated `*.pw.toml` before finalizing.
 7. Verify git ignores:
+
+The `devtool.bat add-*`, `devtool.bat update`, and `devtool.bat remove-mod` commands auto-run `refresh`; run `refresh` manually after direct file edits or moves.
 
 ```powershell
 git check-ignore --quiet mods/example.jar
