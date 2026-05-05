@@ -110,7 +110,7 @@ git diff -- pack.toml index.toml mods
 devtool.bat install-files
 ```
 
-该命令使用内置的 `scripts/bin/packwiz-installer-bootstrap.jar`，会先刷新 packwiz 索引，再按 `pack.toml` 安装 `mods/*.jar` 等本地开发文件。默认是 GUI 模式，适合本机开发；遇到需要手动下载的 CurseForge 文件时会弹出页面。下载得到的 `mods/*.jar` 只作为本地开发文件保留，仍然由 `.gitignore` 忽略。
+该命令使用内置的 `scripts/bin/packwiz-installer-bootstrap.jar`，会先刷新 packwiz 索引，再按 `pack.toml` 安装 `mods/*.jar` 等本地开发文件。默认是 GUI 模式，适合本机开发；遇到需要手动下载的 CurseForge 文件时会弹出页面。安装失败会自动重试，默认 5 次、每次间隔 10 秒。下载得到的 `mods/*.jar` 只作为本地开发文件保留，仍然由 `.gitignore` 忽略。
 
 CI、服务器或无桌面环境使用无 GUI 模式：
 
@@ -119,15 +119,16 @@ devtool.bat install-files-headless
 ```
 
 该命令默认传入 `-g -s both`，只在终端输出手动下载链接，不会弹浏览器页面。
+`install-files-headless` 同样会自动重试，默认 5 次、每次间隔 10 秒。
 
-如果下载过程中只有少量网络超时，可以使用重试安装：
+也可以指定重试次数和等待秒数：
 
 ```powershell
-devtool.bat install-files-retry
-devtool.bat install-files-retry 5 10
+devtool.bat install-files 5 10
+devtool.bat install-files-headless 5 10
 ```
 
-第一个数字是最大尝试次数，第二个数字是失败后等待秒数；默认是 5 次、每次间隔 10 秒。packwiz-installer 会校验已存在文件，重跑时只会补缺或重试失败项。
+第一个数字是最大尝试次数，第二个数字是失败后等待秒数。packwiz-installer 会校验已存在文件，重跑时只会补缺或重试失败项。`devtool.bat install-files-retry` 仍可使用，等同于无 GUI 重试安装。
 
 仅当元数据里有直链 `download.url`，也可以使用直链下载器：
 

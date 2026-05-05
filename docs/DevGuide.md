@@ -67,10 +67,26 @@ devtool.bat
 菜单里已经封装了仓库检查、刷新索引、添加项目、更新项目、用 packwiz-installer 安装本地文件、下载直链文件、扫描临时 jar 和生成 mod 清单等操作。
 参数式命令主要给 AI agent、自动化脚本或维护者排查问题使用，相关细节放在 `.agents/skills/packwiz-modpack/SKILL.md` 和 `docs/PACKWIZ_WORKFLOW.md`。
 
+## 初始化 mod 下载
+
+首次准备开发环境时：
+
+1. 从开发群文件下载需要手动补齐的 mod jar。
+2. 把这些 jar 放进仓库根目录的 `mods/` 文件夹。
+3. 双击根目录的 `devtool.bat`。
+4. 在菜单里选择 `12` 或 `13` 安装 packwiz 管理的本地文件：
+   - `12. 安装文件到本地（GUI，自动重试）`：推荐本机开发使用。需要手动下载的 CurseForge 文件会弹页面；网络不稳时会自动重试。
+   - `13. 安装文件到本地（无 GUI，自动重试）`：适合服务器、远程终端或不想弹窗口时使用。
+
+下载完成后，`mods/` 里会出现本地运行用的 `*.jar`。这些 jar 不提交，只保留在本机开发环境。以后如果误删某个 jar，再运行菜单 `12` 即可补回来。
+
 增删 mod 的基本规则：
 
-- 新增使用 `devtool.bat add-curseforge`、`devtool.bat add-modrinth`、`devtool.bat add-url` 或 `devtool.bat add-github`。
-- 删除使用 `devtool.bat remove-mod <name-or-metadata-file>`。
+- 不要直接通过删除或复制 `mods/*.jar` 来调整整合包 mod 列表。jar 只是本地运行文件，真正的 mod 列表由 `mods/*.pw.toml` 管理。
+- 新增 CurseForge mod 使用菜单 `8. 添加 CurseForge 项目`，或命令 `devtool.bat add-curseforge <project>`。
+- 新增 Modrinth mod 使用菜单 `7. 添加 Modrinth 项目`，或命令 `devtool.bat add-modrinth <project>`。
+- 新增直链或 GitHub Release 文件使用菜单 `9` 或 `10`。
+- 删除 mod 使用菜单 `11. 移除 packwiz 管理文件`，或命令 `devtool.bat remove-mod <name-or-metadata-file>`。
 - `add-*`、`update`、`remove-mod` 会自动刷新 `index.toml`；之后运行 `devtool.bat install-files`。无桌面环境使用 `devtool.bat install-files-headless`；网络不稳时使用 `devtool.bat install-files-retry`。
 - 提交 `mods/*.pw.toml`、`pack.toml`、`index.toml` 的变化，不提交 `mods/*.jar`。
 

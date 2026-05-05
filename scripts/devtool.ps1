@@ -75,9 +75,9 @@ Create Delight Project Rebirth 开发工具
   devtool.bat add-url <url> [packwiz args...]
   devtool.bat add-github <owner/repo|url> [packwiz args...]
   devtool.bat remove-mod <name|metadata-file> [packwiz args...]
-  devtool.bat install-files [packwiz-installer args...]           # GUI 模式，适合本机开发
-  devtool.bat install-files-headless [packwiz-installer args...]  # 默认使用 -g -s both
-  devtool.bat install-files-retry [attempts] [delay-seconds]
+  devtool.bat install-files [attempts] [delay-seconds]           # GUI 模式，默认重试 5 次
+  devtool.bat install-files-headless [attempts] [delay-seconds]  # 无 GUI，默认重试 5 次
+  devtool.bat install-files-retry [attempts] [delay-seconds]     # install-files-headless 的兼容别名
   devtool.bat download-files [-Force] [-CurseForgeApiKey <key>] [-CurseForgeApiBaseUrl <url>]
   devtool.bat detect-curseforge [-Yes]  # 迁移专用，非必要不使用
   devtool.bat modlist [-OutputDir docs/generated]
@@ -139,16 +139,15 @@ function Start-DevMenu {
     Write-Host "  9. 添加直链 URL"
     Write-Host " 10. 添加 GitHub Release 项目"
     Write-Host " 11. 移除 packwiz 管理文件"
-    Write-Host " 12. 用 packwiz-installer 安装文件到本地（GUI）"
-    Write-Host " 13. 用 packwiz-installer 安装文件到本地（无 GUI）"
-    Write-Host " 14. 重试安装文件到本地（无 GUI）"
-    Write-Host " 15. 下载直链 packwiz 管理文件到本地（不清理无关文件）"
-    Write-Host " 16. 扫描 mods 目录生成 CurseForge meta（迁移专用，非必要不使用）" -ForegroundColor Yellow
-    Write-Host " 17. 生成 modlist 清单"
-    Write-Host " 18. 启动 packwiz 本地服务器"
-    Write-Host " 19. 导出 Modrinth .mrpack"
-    Write-Host " 20. 导出 CurseForge .zip"
-    Write-Host " 21. 执行自定义 packwiz 命令"
+    Write-Host " 12. 安装文件到本地（GUI，自动重试）"
+    Write-Host " 13. 安装文件到本地（无 GUI，自动重试）"
+    Write-Host " 14. 下载直链 packwiz 管理文件到本地（不清理无关文件）"
+    Write-Host " 15. 扫描 mods 目录生成 CurseForge meta（迁移专用，非必要不使用）" -ForegroundColor Yellow
+    Write-Host " 16. 生成 modlist 清单"
+    Write-Host " 17. 启动 packwiz 本地服务器"
+    Write-Host " 18. 导出 Modrinth .mrpack"
+    Write-Host " 19. 导出 CurseForge .zip"
+    Write-Host " 20. 执行自定义 packwiz 命令"
     Write-Host "  0. 退出"
     Write-Host ""
 
@@ -242,14 +241,6 @@ function Start-DevMenu {
           Pause-Menu
         }
         "12" {
-          Invoke-PackwizInstaller (Read-PackwizExtraArgs "额外 packwiz-installer 参数，留空表示无")
-          Pause-Menu
-        }
-        "13" {
-          Invoke-PackwizInstallerHeadless (Read-PackwizExtraArgs "额外 packwiz-installer 参数，留空表示无")
-          Pause-Menu
-        }
-        "14" {
           $attempts = Read-Host "最大尝试次数，留空使用 5"
           $delay = Read-Host "失败后等待秒数，留空使用 10"
           $args = @()
@@ -259,10 +250,23 @@ function Start-DevMenu {
           if (-not [string]::IsNullOrWhiteSpace($delay)) {
             $args += $delay
           }
-          Invoke-PackwizInstallerRetry $args
+          Invoke-PackwizInstallerWithRetry -InstallerArgs @() -RawRetryArgs $args
           Pause-Menu
         }
-        "15" {
+        "13" {
+          $attempts = Read-Host "最大尝试次数，留空使用 5"
+          $delay = Read-Host "失败后等待秒数，留空使用 10"
+          $args = @()
+          if (-not [string]::IsNullOrWhiteSpace($attempts)) {
+            $args += $attempts
+          }
+          if (-not [string]::IsNullOrWhiteSpace($delay)) {
+            $args += $delay
+          }
+          Invoke-PackwizInstallerWithRetry -InstallerArgs @("-g", "-s", "both") -RawRetryArgs $args
+          Pause-Menu
+        }
+        "14" {
           $force = Read-Host "是否覆盖已存在文件？y/N"
           $args = @()
           if ($force -match "^(y|yes)$") {
@@ -271,7 +275,7 @@ function Start-DevMenu {
           Download-PackFiles $args
           Pause-Menu
         }
-        "16" {
+        "15" {
           Write-Warn "此操作会扫描 mods/*.jar 并尝试生成 CurseForge meta。"
           Write-Warn "这是迁移阶段兜底工具，非必要不使用；执行前请确认本地改动已提交或备份。"
           Write-Warn "执行后请检查生成的 *.pw.toml 和 index.toml，不要提交无关 jar。"
@@ -285,7 +289,7 @@ function Start-DevMenu {
           }
           Pause-Menu
         }
-        "17" {
+        "16" {
           $outputDir = Read-Host "输出目录，留空使用 docs/generated"
           if ([string]::IsNullOrWhiteSpace($outputDir)) {
             Write-ModList @()
@@ -295,7 +299,7 @@ function Start-DevMenu {
           }
           Pause-Menu
         }
-        "18" {
+        "17" {
           $port = Read-Host "端口，留空使用 packwiz 默认值"
           if ([string]::IsNullOrWhiteSpace($port)) {
             Invoke-Packwiz @("serve")
@@ -305,7 +309,7 @@ function Start-DevMenu {
           }
           Pause-Menu
         }
-        "19" {
+        "18" {
           $output = Read-Host "输出文件，留空使用 packwiz 默认值"
           if ([string]::IsNullOrWhiteSpace($output)) {
             Invoke-Packwiz (@("modrinth", "export") + (Read-PackwizExtraArgs))
@@ -315,7 +319,7 @@ function Start-DevMenu {
           }
           Pause-Menu
         }
-        "20" {
+        "19" {
           $side = Read-Host "导出侧 client/server，留空使用 packwiz 默认值"
           $args = @("curseforge", "export")
           if (-not [string]::IsNullOrWhiteSpace($side)) {
@@ -325,7 +329,7 @@ function Start-DevMenu {
           Invoke-Packwiz $args
           Pause-Menu
         }
-        "21" {
+        "20" {
           $custom = Read-PackwizExtraArgs "packwiz 命令参数"
           if ($custom.Count -eq 0) {
             Write-Warn "未输入命令。"
@@ -834,7 +838,7 @@ function Invoke-PackwizInstallerHeadless {
   Invoke-PackwizInstaller $effectiveInstallerArgs
 }
 
-function Invoke-PackwizInstallerRetry {
+function ConvertTo-InstallerRetryOptions {
   param([string[]] $RawArgs)
 
   $attempts = 5
@@ -852,28 +856,48 @@ function Invoke-PackwizInstallerRetry {
     }
   }
 
+  return [pscustomobject]@{
+    Attempts = $attempts
+    DelaySeconds = $delaySeconds
+  }
+}
+
+function Invoke-PackwizInstallerWithRetry {
+  param(
+    [string[]] $InstallerArgs,
+    [string[]] $RawRetryArgs
+  )
+
+  $options = ConvertTo-InstallerRetryOptions $RawRetryArgs
   $lastError = $null
-  for ($i = 1; $i -le $attempts; $i++) {
-    Write-Info "安装尝试 $i/$attempts"
+  for ($i = 1; $i -le $options.Attempts; $i++) {
+    Write-Info "安装尝试 $i/$($options.Attempts)"
     try {
-      Invoke-PackwizInstallerHeadless @()
+      Invoke-PackwizInstaller $InstallerArgs
       return
     }
     catch {
       $lastError = $_
-      if ($i -ge $attempts) {
+      if ($i -ge $options.Attempts) {
         break
       }
 
       Write-Warn "安装失败：$($_.Exception.Message)"
-      if ($delaySeconds -gt 0) {
-        Write-Info "等待 $delaySeconds 秒后重试。"
-        Start-Sleep -Seconds $delaySeconds
+      if ($options.DelaySeconds -gt 0) {
+        Write-Info "等待 $($options.DelaySeconds) 秒后重试。"
+        Start-Sleep -Seconds $options.DelaySeconds
       }
     }
   }
 
+  Write-Fail "安装仍然失败。请检查上方 packwiz-installer 输出；若是 CurseForge 手动下载项，请按提示下载到 mods/ 后重试。"
   throw $lastError
+}
+
+function Invoke-PackwizInstallerRetry {
+  param([string[]] $RawArgs)
+
+  Invoke-PackwizInstallerWithRetry -InstallerArgs @("-g", "-s", "both") -RawRetryArgs $RawArgs
 }
 
 function Get-CurseForgeApiKey {
@@ -1258,10 +1282,10 @@ switch ($Command) {
     Invoke-PackwizAndRefresh (@("remove") + $Rest)
   }
   "install-files" {
-    Invoke-PackwizInstaller $Rest
+    Invoke-PackwizInstallerWithRetry -InstallerArgs @() -RawRetryArgs $Rest
   }
   "install-files-headless" {
-    Invoke-PackwizInstallerHeadless $Rest
+    Invoke-PackwizInstallerWithRetry -InstallerArgs @("-g", "-s", "both") -RawRetryArgs $Rest
   }
   "install-files-retry" {
     Invoke-PackwizInstallerRetry $Rest
