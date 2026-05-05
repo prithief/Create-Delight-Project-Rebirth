@@ -16,7 +16,6 @@
 
 | mod id | 1.20.1 jar | 状态 |
 | --- | --- | --- |
-| `collectorsreap` | `collectorsreap-1.20.1-1.5.5.jar` | 🔴 缺失/需移植 |
 | `silentsdelight` | `silentsdelight-forge-1.0.1-1.20.1.jar` | 🔴 缺失/需移植 |
 | `endergetic` | `endergetic-1.20.1-5.0.1.jar` | 🔴 缺失/需移植 |
 | `tetracelium` | `tetracelium-1.20.1-1.3.1.jar` | 🔴 缺失/需移植 |
@@ -33,6 +32,7 @@
 | `vintagedelight` | `vintagedelight-0.1.6.jar` | 已完成 1.21.1 NeoForge 迁移验证（PinkCats）。  |
 | `mutil` | `mutil-1.20.1-6.2.0.jar` | 已有可用 1.21.1 NeoForge 社区版本（PinkCats）。   |
 | `tetra` | `tetra-1.20.1-6.11.0.jar` | 已有可用 1.21.1 NeoForge 社区版本（PinkCats）。 |
+| `collectorsreap` | `collectorsreap-1.20.1-1.5.5.jar` | 已完成 1.21.1 NeoForge 迁移验证（PinkCats）。 |
 
 ## 🔴 缺失/需移植
 
