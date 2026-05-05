@@ -68,6 +68,7 @@ scripts/bin/*
 !scripts/bin/packwiz-installer-bootstrap.VERSION.txt
 *.mrpack
 *.zip
+*.7z
 mods/*.jar
 !scripts/bin/packwiz-installer-bootstrap.jar
 logs/

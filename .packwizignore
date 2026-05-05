@@ -22,6 +22,7 @@ packwiz.json
 *.jar.disabled
 *.mrpack
 *.zip
+*.7z
 logs/
 crash-reports/
 saves/
