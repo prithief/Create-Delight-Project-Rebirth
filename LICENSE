@@ -11,6 +11,16 @@ This project includes these third-party parts:
   - Detailed provenance record: `scripts/bin/packwiz.VERSION.txt`
   - The vendored binary is excluded from packwiz exports through `.packwizignore` and should not be shipped as part of the modpack runtime.
 
+- packwiz-installer-bootstrap: MIT
+  - Vendored path: `scripts/bin/packwiz-installer-bootstrap.jar`
+  - Purpose: developer tool for installing packwiz-managed files into a local development instance
+  - Source project: https://github.com/packwiz/packwiz-installer-bootstrap
+  - Version/tag: v0.0.3
+  - Release asset: https://github.com/packwiz/packwiz-installer-bootstrap/releases/download/v0.0.3/packwiz-installer-bootstrap.jar
+  - Binary SHA256: A8FBB24DC604278E97F4688E82D3D91A318B98EFC08D5DBFCBCBCAB6443D116C
+  - Detailed provenance record: `scripts/bin/packwiz-installer-bootstrap.VERSION.txt`
+  - The vendored binary is excluded from packwiz exports through `.packwizignore` and should not be shipped as part of the modpack runtime.
+
 This project's code defaults to the MIT License:
 
 MIT License

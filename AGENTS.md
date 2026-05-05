@@ -10,8 +10,9 @@ Shared repository skills live under `.agents/skills/`.
 ## Hard Rules
 
 - Do not commit mod jars, downloaded shader/resource pack zips, generated NeoForge libraries, worlds, logs, or runtime state.
-- The only allowed vendored binary is `scripts/bin/packwiz.exe`.
+- The only allowed vendored binaries are `scripts/bin/packwiz.exe` and `scripts/bin/packwiz-installer-bootstrap.jar`.
 - When `scripts/bin/packwiz.exe` changes, update `LICENSE` and `scripts/bin/packwiz.VERSION.txt` with version/source/SHA256.
+- When `scripts/bin/packwiz-installer-bootstrap.jar` changes, update `LICENSE` and `scripts/bin/packwiz-installer-bootstrap.VERSION.txt` with version/source/SHA256.
 - Track packwiz descriptors such as `mods/*.pw.toml` and refresh `index.toml` after packwiz changes.
 - Prefer the root `devtool.bat` entry point for local packwiz operations in this repository.
 - Keep Minecraft `1.21.1`, NeoForge `21.1.228`, and Java `21` aligned across `pack.toml`, `variables.txt`, and documented examples.

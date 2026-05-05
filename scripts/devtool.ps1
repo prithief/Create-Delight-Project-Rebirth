@@ -13,6 +13,8 @@ param(
     "add-curseforge",
     "add-url",
     "add-github",
+    "remove-mod",
+    "install-files",
     "download-files",
     "detect-curseforge",
     "modlist",
@@ -31,6 +33,7 @@ $ErrorActionPreference = "Stop"
 $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $BinDir = Join-Path $RepoRoot "scripts\bin"
 $LocalPackwiz = Join-Path $BinDir "packwiz.exe"
+$LocalPackwizInstallerBootstrap = Join-Path $BinDir "packwiz-installer-bootstrap.jar"
 $DefaultPackwizRepo = "Jasons-impart/packwiz"
 
 function Write-Info {
@@ -69,7 +72,9 @@ Create Delight Project Rebirth 开发工具
   devtool.bat add-curseforge <slug|url|project-id> [packwiz args...]
   devtool.bat add-url <url> [packwiz args...]
   devtool.bat add-github <owner/repo|url> [packwiz args...]
-  devtool.bat download-files [-Force]
+  devtool.bat remove-mod <name|metadata-file> [packwiz args...]
+  devtool.bat install-files [packwiz-installer args...]
+  devtool.bat download-files [-Force] [-CurseForgeApiKey <key>] [-CurseForgeApiBaseUrl <url>]
   devtool.bat detect-curseforge [-Yes]  # 迁移专用，非必要不使用
   devtool.bat modlist [-OutputDir docs/generated]
   devtool.bat serve [-p port] [packwiz args...]
@@ -129,13 +134,15 @@ function Start-DevMenu {
     Write-Host "  8. 添加 CurseForge 项目"
     Write-Host "  9. 添加直链 URL"
     Write-Host " 10. 添加 GitHub Release 项目"
-    Write-Host " 11. 下载 packwiz 管理文件到本地（不清理无关文件）"
-    Write-Host " 12. 扫描 mods 目录生成 CurseForge meta（迁移专用，非必要不使用）" -ForegroundColor Yellow
-    Write-Host " 13. 生成 modlist 清单"
-    Write-Host " 14. 启动 packwiz 本地服务器"
-    Write-Host " 15. 导出 Modrinth .mrpack"
-    Write-Host " 16. 导出 CurseForge .zip"
-    Write-Host " 17. 执行自定义 packwiz 命令"
+    Write-Host " 11. 移除 packwiz 管理文件"
+    Write-Host " 12. 用 packwiz-installer 安装文件到本地"
+    Write-Host " 13. 下载直链 packwiz 管理文件到本地（不清理无关文件）"
+    Write-Host " 14. 扫描 mods 目录生成 CurseForge meta（迁移专用，非必要不使用）" -ForegroundColor Yellow
+    Write-Host " 15. 生成 modlist 清单"
+    Write-Host " 16. 启动 packwiz 本地服务器"
+    Write-Host " 17. 导出 Modrinth .mrpack"
+    Write-Host " 18. 导出 CurseForge .zip"
+    Write-Host " 19. 执行自定义 packwiz 命令"
     Write-Host "  0. 退出"
     Write-Host ""
 
@@ -219,6 +226,21 @@ function Start-DevMenu {
           Pause-Menu
         }
         "11" {
+          $name = Read-Host "要移除的名称或 metadata 文件，例如 create 或 mods/create.pw.toml"
+          if ([string]::IsNullOrWhiteSpace($name)) {
+            Write-Warn "未输入名称。"
+          }
+          else {
+            Invoke-Packwiz (@("remove", $name) + (Read-PackwizExtraArgs))
+            Invoke-Packwiz @("refresh")
+          }
+          Pause-Menu
+        }
+        "12" {
+          Invoke-PackwizInstaller (Read-PackwizExtraArgs "额外 packwiz-installer 参数，留空表示无")
+          Pause-Menu
+        }
+        "13" {
           $force = Read-Host "是否覆盖已存在文件？y/N"
           $args = @()
           if ($force -match "^(y|yes)$") {
@@ -227,7 +249,7 @@ function Start-DevMenu {
           Download-PackFiles $args
           Pause-Menu
         }
-        "12" {
+        "14" {
           Write-Warn "此操作会扫描 mods/*.jar 并尝试生成 CurseForge meta。"
           Write-Warn "这是迁移阶段兜底工具，非必要不使用；执行前请确认本地改动已提交或备份。"
           Write-Warn "执行后请检查生成的 *.pw.toml 和 index.toml，不要提交无关 jar。"
@@ -241,7 +263,7 @@ function Start-DevMenu {
           }
           Pause-Menu
         }
-        "13" {
+        "15" {
           $outputDir = Read-Host "输出目录，留空使用 docs/generated"
           if ([string]::IsNullOrWhiteSpace($outputDir)) {
             Write-ModList @()
@@ -251,7 +273,7 @@ function Start-DevMenu {
           }
           Pause-Menu
         }
-        "14" {
+        "16" {
           $port = Read-Host "端口，留空使用 packwiz 默认值"
           if ([string]::IsNullOrWhiteSpace($port)) {
             Invoke-Packwiz @("serve")
@@ -261,7 +283,7 @@ function Start-DevMenu {
           }
           Pause-Menu
         }
-        "15" {
+        "17" {
           $output = Read-Host "输出文件，留空使用 packwiz 默认值"
           if ([string]::IsNullOrWhiteSpace($output)) {
             Invoke-Packwiz (@("modrinth", "export") + (Read-PackwizExtraArgs))
@@ -271,7 +293,7 @@ function Start-DevMenu {
           }
           Pause-Menu
         }
-        "16" {
+        "18" {
           $side = Read-Host "导出侧 client/server，留空使用 packwiz 默认值"
           $args = @("curseforge", "export")
           if (-not [string]::IsNullOrWhiteSpace($side)) {
@@ -281,7 +303,7 @@ function Start-DevMenu {
           Invoke-Packwiz $args
           Pause-Menu
         }
-        "17" {
+        "19" {
           $custom = Read-PackwizExtraArgs "packwiz 命令参数"
           if ($custom.Count -eq 0) {
             Write-Warn "未输入命令。"
@@ -339,6 +361,22 @@ function ConvertTo-OptionMap {
       }
       "--force" {
         $options.Force = $true
+      }
+      "-CurseForgeApiKey" {
+        $i++
+        $options.CurseForgeApiKey = $RawArgs[$i]
+      }
+      "--curseforge-api-key" {
+        $i++
+        $options.CurseForgeApiKey = $RawArgs[$i]
+      }
+      "-CurseForgeApiBaseUrl" {
+        $i++
+        $options.CurseForgeApiBaseUrl = $RawArgs[$i]
+      }
+      "--curseforge-api-base-url" {
+        $i++
+        $options.CurseForgeApiBaseUrl = $RawArgs[$i]
       }
       default {
         $positionals.Add($arg)
@@ -433,6 +471,9 @@ function Read-PackwizMeta {
     Url      = $null
     Hash     = $null
     HashMode = $null
+    Mode     = $null
+    CurseForgeProjectId = $null
+    CurseForgeFileId    = $null
   }
 
   foreach ($line in Get-Content -Path $Path) {
@@ -451,11 +492,20 @@ function Read-PackwizMeta {
     elseif ($line -match '^\s*url\s*=\s*"([^"]+)"') {
       $meta.Url = $matches[1]
     }
+    elseif ($line -match '^\s*mode\s*=\s*"([^"]+)"') {
+      $meta.Mode = $matches[1]
+    }
     elseif ($line -match '^\s*hash\s*=\s*"([^"]+)"') {
       $meta.Hash = $matches[1]
     }
     elseif ($line -match '^\s*hash-format\s*=\s*"([^"]+)"') {
       $meta.HashMode = $matches[1]
+    }
+    elseif ($line -match '^\s*project-id\s*=\s*([0-9]+)') {
+      $meta.CurseForgeProjectId = $matches[1]
+    }
+    elseif ($line -match '^\s*file-id\s*=\s*([0-9]+)') {
+      $meta.CurseForgeFileId = $matches[1]
     }
   }
 
@@ -714,11 +764,116 @@ function Test-DownloadedHash {
   }
 }
 
+function Invoke-PackwizInstaller {
+  param([string[]] $InstallerArgs)
+
+  if (-not (Test-Path $LocalPackwizInstallerBootstrap)) {
+    throw "未找到 packwiz-installer-bootstrap.jar：$LocalPackwizInstallerBootstrap"
+  }
+
+  $java = Get-Command "java" -ErrorAction SilentlyContinue
+  if ($null -eq $java) {
+    throw "未找到 java。请安装 Java 21，或把 Java 加入 PATH。"
+  }
+
+  Invoke-Packwiz @("refresh")
+
+  Push-Location $RepoRoot
+  try {
+    $args = @("-jar", $LocalPackwizInstallerBootstrap, ".\pack.toml") + $InstallerArgs
+    Write-Info "执行：java $($args -join ' ')"
+    & $java.Source @args
+    if ($LASTEXITCODE -ne 0) {
+      throw "packwiz-installer 退出码：$LASTEXITCODE"
+    }
+  }
+  finally {
+    Pop-Location
+  }
+
+  Write-Success "packwiz-installer 已完成。下载的 mods/*.jar 会保留在本地并被 git 忽略。"
+}
+
+function Get-CurseForgeApiKey {
+  param($Options)
+
+  if ($Options.ContainsKey("CurseForgeApiKey") -and -not [string]::IsNullOrWhiteSpace($Options.CurseForgeApiKey)) {
+    return $Options.CurseForgeApiKey
+  }
+
+  if (-not [string]::IsNullOrWhiteSpace($env:CURSEFORGE_API_KEY)) {
+    return $env:CURSEFORGE_API_KEY
+  }
+
+  if (-not [string]::IsNullOrWhiteSpace($env:CF_API_KEY)) {
+    return $env:CF_API_KEY
+  }
+
+  return $null
+}
+
+function Get-CurseForgeApiBaseUrl {
+  param($Options)
+
+  if ($Options.ContainsKey("CurseForgeApiBaseUrl") -and -not [string]::IsNullOrWhiteSpace($Options.CurseForgeApiBaseUrl)) {
+    return $Options.CurseForgeApiBaseUrl.TrimEnd("/")
+  }
+
+  if (-not [string]::IsNullOrWhiteSpace($env:CURSEFORGE_API_BASE_URL)) {
+    return $env:CURSEFORGE_API_BASE_URL.TrimEnd("/")
+  }
+
+  return "https://api.curseforge.com"
+}
+
+function Get-CurseForgeDownloadUrl {
+  param(
+    [string] $ApiBaseUrl,
+    [string] $ApiKey,
+    [string] $ProjectId,
+    [string] $FileId
+  )
+
+  $requestUrl = "$ApiBaseUrl/v1/mods/$ProjectId/files/$FileId/download-url"
+  $response = Invoke-RestMethod -Method Get -Uri $requestUrl -TimeoutSec 60 -Headers @{
+    "Accept" = "application/json"
+    "x-api-key" = $ApiKey
+  }
+
+  if ($null -eq $response -or [string]::IsNullOrWhiteSpace($response.data)) {
+    return $null
+  }
+
+  return [string] $response.data
+}
+
+function Resolve-PackFileTarget {
+  param(
+    [string] $RepoRoot,
+    [string] $MetaPath,
+    [string] $PackFile
+  )
+
+  if ([System.IO.Path]::IsPathRooted($PackFile)) {
+    return $PackFile
+  }
+
+  if ($PackFile -match '[\\/]') {
+    return (Join-Path $RepoRoot $PackFile)
+  }
+
+  $metaDir = Split-Path -Parent $MetaPath
+  return (Join-Path $metaDir $PackFile)
+}
+
 function Download-PackFiles {
   param([string[]] $RawArgs)
 
   $options = ConvertTo-OptionMap $RawArgs
   $force = [bool] $options.Force
+  $curseForgeApiKey = Get-CurseForgeApiKey $options
+  $curseForgeApiBaseUrl = Get-CurseForgeApiBaseUrl $options
+  $missingCurseForgeApiKeyWarned = $false
   $metaFiles = @(Get-PackwizMetaFiles)
 
   if ($metaFiles.Count -eq 0) {
@@ -732,14 +887,47 @@ function Download-PackFiles {
 
   foreach ($metaFile in $metaFiles) {
     $meta = Read-PackwizMeta $metaFile.FullName
+    $relativeMeta = Get-RelativePath $RepoRoot $metaFile.FullName
 
-    if ([string]::IsNullOrWhiteSpace($meta.File) -or [string]::IsNullOrWhiteSpace($meta.Url)) {
-      Write-Warn "跳过缺少 file/url 的 meta：$(Get-RelativePath $RepoRoot $metaFile.FullName)"
+    if ([string]::IsNullOrWhiteSpace($meta.File)) {
+      Write-Warn "跳过缺少 file/filename 的 meta：$relativeMeta"
       $skipped++
       continue
     }
 
-    $target = Join-Path $RepoRoot $meta.File
+    $downloadUrl = $meta.Url
+    if ([string]::IsNullOrWhiteSpace($downloadUrl) -and $meta.Mode -eq "metadata:curseforge") {
+      if ([string]::IsNullOrWhiteSpace($meta.CurseForgeProjectId) -or [string]::IsNullOrWhiteSpace($meta.CurseForgeFileId)) {
+        Write-Warn "跳过缺少 CurseForge project-id/file-id 的 meta：$relativeMeta"
+        $skipped++
+        continue
+      }
+
+      if ([string]::IsNullOrWhiteSpace($curseForgeApiKey)) {
+        if (-not $missingCurseForgeApiKeyWarned) {
+          Write-Warn "metadata:curseforge 下载需要 CurseForge API Key。"
+          Write-Warn "可先在当前终端设置：`$env:CURSEFORGE_API_KEY='你的 key'，或运行 download-files -CurseForgeApiKey <key>。"
+          $missingCurseForgeApiKeyWarned = $true
+        }
+        $skipped++
+        continue
+      }
+
+      Write-Info "解析 CurseForge 下载地址：$relativeMeta"
+      $downloadUrl = Get-CurseForgeDownloadUrl `
+        -ApiBaseUrl $curseForgeApiBaseUrl `
+        -ApiKey $curseForgeApiKey `
+        -ProjectId $meta.CurseForgeProjectId `
+        -FileId $meta.CurseForgeFileId
+    }
+
+    if ([string]::IsNullOrWhiteSpace($downloadUrl)) {
+      Write-Warn "跳过缺少 download.url 的 meta：$relativeMeta"
+      $skipped++
+      continue
+    }
+
+    $target = Resolve-PackFileTarget -RepoRoot $RepoRoot -MetaPath $metaFile.FullName -PackFile $meta.File
     $targetDir = Split-Path -Parent $target
 
     if (-not (Test-Path $targetDir)) {
@@ -752,8 +940,8 @@ function Download-PackFiles {
       continue
     }
 
-    Write-Info "下载：$($meta.File)"
-    Invoke-WebRequest -Uri $meta.Url -OutFile $target -TimeoutSec 300 -Headers @{
+    Write-Info "下载：$(Get-RelativePath $RepoRoot $target)"
+    Invoke-WebRequest -Uri $downloadUrl -OutFile $target -TimeoutSec 300 -Headers @{
       "User-Agent" = "Create-Delight-Project-Rebirth-devtool"
     }
 
@@ -983,6 +1171,13 @@ switch ($Command) {
   }
   "add-github" {
     Invoke-Packwiz (@("github", "add") + $Rest)
+  }
+  "remove-mod" {
+    Invoke-Packwiz (@("remove") + $Rest)
+    Invoke-Packwiz @("refresh")
+  }
+  "install-files" {
+    Invoke-PackwizInstaller $Rest
   }
   "download-files" {
     Download-PackFiles $Rest

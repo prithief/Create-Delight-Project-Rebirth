@@ -13,8 +13,9 @@ Use this skill for packwiz-based Minecraft modpack repository work.
 - Do not commit mod jars, generated NeoForge libraries, worlds, logs, crash reports, or local server state.
 - Track packwiz metadata: `pack.toml`, `index.toml`, `.packwizignore`, and `*.pw.toml`.
 - In this repository, use the root `devtool.bat` entry point first. It prefers the vendored `scripts/bin/packwiz.exe`.
-- The only allowed vendored binary is `scripts/bin/packwiz.exe`.
+- The only allowed vendored binaries are `scripts/bin/packwiz.exe` and `scripts/bin/packwiz-installer-bootstrap.jar`.
 - If `scripts/bin/packwiz.exe` changes, update `LICENSE` and `scripts/bin/packwiz.VERSION.txt` with source/version/SHA256.
+- If `scripts/bin/packwiz-installer-bootstrap.jar` changes, update `LICENSE` and `scripts/bin/packwiz-installer-bootstrap.VERSION.txt` with source/version/SHA256.
 - Run `packwiz refresh` after adding, removing, moving, or editing pack files.
 
 ## Common Commands
@@ -30,6 +31,8 @@ devtool.bat add-modrinth <project>
 devtool.bat add-curseforge <project>
 devtool.bat add-url <url>
 devtool.bat add-github <owner/repo-or-url>
+devtool.bat remove-mod <name-or-metadata-file>
+devtool.bat install-files
 devtool.bat download-files
 devtool.bat detect-curseforge
 devtool.bat modlist
@@ -118,6 +121,8 @@ Allow these when relevant:
 
 - `scripts/bin/packwiz.exe`
 - `scripts/bin/packwiz.VERSION.txt`
+- `scripts/bin/packwiz-installer-bootstrap.jar`
+- `scripts/bin/packwiz-installer-bootstrap.VERSION.txt`
 - `mods/*.pw.toml`
 - curated config/KubeJS/resource files
 

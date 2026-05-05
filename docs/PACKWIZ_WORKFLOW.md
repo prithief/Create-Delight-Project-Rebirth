@@ -31,17 +31,123 @@ devtool.bat add-curseforge <project>
 devtool.bat add-modrinth <project>
 devtool.bat add-url <url>
 devtool.bat add-github <owner/repo-or-url>
+devtool.bat remove-mod <name-or-metadata-file>
 devtool.bat update <mod-slug>
 devtool.bat update --all
 ```
 
+## 增删 Mod 开发流程
+
+添加、删除、更新 mod 都以 packwiz 元数据为准。不要把 `mods/*.jar` 当作源文件提交。
+
+添加 CurseForge mod：
+
+```powershell
+devtool.bat add-curseforge <slug-or-url-or-project-id>
+devtool.bat refresh
+devtool.bat install-files
+devtool.bat check
+git status --short --untracked-files=all
+```
+
+添加 Modrinth mod：
+
+```powershell
+devtool.bat add-modrinth <slug-or-url-or-project-id>
+devtool.bat refresh
+devtool.bat install-files
+devtool.bat check
+git status --short --untracked-files=all
+```
+
+添加直链或 GitHub Release 文件：
+
+```powershell
+devtool.bat add-url <download-url>
+devtool.bat add-github <owner/repo-or-url>
+devtool.bat refresh
+devtool.bat install-files
+devtool.bat check
+```
+
+删除 mod：
+
+```powershell
+devtool.bat remove-mod <name-or-metadata-file>
+devtool.bat refresh
+devtool.bat install-files
+devtool.bat check
+git status --short --untracked-files=all
+```
+
+`<name-or-metadata-file>` 可以是 packwiz 列表里的名称，也可以是 `mods/example.pw.toml` 这类元数据文件路径。删除后如果本地 `mods/` 里还残留旧 jar，手动删掉对应 jar 即可；它是本地运行文件，不进 Git。
+
+更新单个 mod：
+
+```powershell
+devtool.bat update <mod-slug>
+devtool.bat refresh
+devtool.bat install-files
+devtool.bat check
+```
+
+更新全部 mod：
+
+```powershell
+devtool.bat update --all
+devtool.bat refresh
+devtool.bat install-files
+devtool.bat check
+```
+
+提交前重点检查：
+
+```powershell
+git status --short --untracked-files=all
+git diff -- pack.toml index.toml mods
+```
+
+应该提交的是 `mods/*.pw.toml`、`pack.toml`、`index.toml`，以及确认要共享的 `config/`、`defaultconfigs/`、`kubejs/` 等源码文件。不要提交 `mods/*.jar`、导出 zip、`.mrpack`、NeoForge 运行文件、世界、日志或本地配置。
+
 下载 packwiz 元数据声明的本地文件：
+
+```powershell
+devtool.bat install-files
+```
+
+该命令使用内置的 `scripts/bin/packwiz-installer-bootstrap.jar`，会先刷新 packwiz 索引，再按 `pack.toml` 安装 `mods/*.jar` 等本地开发文件。它适合处理 `metadata:curseforge`，开发者不需要手动提供 CurseForge API Key。下载得到的 `mods/*.jar` 只作为本地开发文件保留，仍然由 `.gitignore` 忽略。
+
+仅当元数据里有直链 `download.url`，也可以使用直链下载器：
 
 ```powershell
 devtool.bat download-files
 ```
 
 该命令不会删除本地无关文件。谨慎使用会按 manifest 清理目录的 mod 同步器。
+
+直链下载器的 CurseForge API 兜底：
+
+如果不用 `install-files`，而是直接运行 `download-files` 处理 `metadata:curseforge`：
+
+```toml
+[download]
+mode = "metadata:curseforge"
+```
+
+下载前需要在当前终端提供 CurseForge API Key：
+
+```powershell
+$env:CURSEFORGE_API_KEY="你的 key"
+devtool.bat download-files
+```
+
+也可以只对单次命令传入：
+
+```powershell
+devtool.bat download-files -CurseForgeApiKey "你的 key"
+```
+
+API Key 不要写入仓库。下载得到的 `mods/*.jar` 只作为本地开发文件保留，仍然由 `.gitignore` 忽略。
 
 迁移阶段扫描临时 jar 并生成 CurseForge meta：
 

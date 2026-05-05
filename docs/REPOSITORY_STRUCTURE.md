@@ -13,7 +13,7 @@
 - `start.bat`、`start.sh`、`variables.txt`: 服务端启动模板和共享变量。
 - `devtool.bat`: 根目录开发工具入口。
 - `scripts/devtool.ps1`: 开发工具实际实现。
-- `LICENSE`、`scripts/bin/packwiz.VERSION.txt`: 内置 packwiz 可执行文件的协议和来源记录。
+- `LICENSE`、`scripts/bin/packwiz.VERSION.txt`、`scripts/bin/packwiz-installer-bootstrap.VERSION.txt`: 内置 packwiz 工具的协议和来源记录。
 - `.agents/skills/`: 面向 AI agent 的共享工作流。
 - `docs/DevGuide.md`: 团队开发指南。
 - `docs/modpack-analysis-report.md`: 旧包迁移分析参考。
@@ -26,7 +26,7 @@
 - NeoForge installer 和生成的 `run.bat` / `run.sh`
 - `libraries/`, `versions/`, `logs/`, `crash-reports/`, `saves/`, `world*`
 - 本地服务端状态，如 `server.properties`、`eula.txt`、`user_jvm_args.txt`
-- `scripts/bin/` 下下载的其它工具二进制，已允许的 `scripts/bin/packwiz.exe` 除外
+- `scripts/bin/` 下下载的其它工具二进制，已允许的 `scripts/bin/packwiz.exe` 和 `scripts/bin/packwiz-installer-bootstrap.jar` 除外
 
 ## 原则
 
