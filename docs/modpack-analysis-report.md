@@ -385,8 +385,6 @@
 | 235 | **Spark** | spark-1.10.53-forge.jar | 1.10.53 | 性能分析器（CPU/RAM/TPS） | ✅ 有NeoForge版 |
 | 236 | **Accelerated Rendering** | acceleratedrendering-1.0.7-1.20.1-alpha.jar | 1.0.7-alpha | 渲染加速 | ✅ 有1.21.1 |
 | 237 | **Sodium Extras** | sodiumextras-forge-1.0.7-1.20.1.jar | 1.0.7 | Embeddium的额外功能配置 | ✅ 有1.21.1 |
-| 238 | **Canary** | (已移除) | - | 服务器性能优化 | - |
-| 239 | **Smooth Boot** | (无) | - | 平滑启动 | - |
 | 240 | **AttributeFix** | AttributeFix-Forge-1.20.1-21.0.5.jar | 21.0.5 | 修复属性上限问题 | ✅ 有NeoForge版 |
 | 241 | **PolyEng** | polyeng-forge-0.1.1-1.20.1.jar | 0.1.1 | 多态引擎优化 | ✅ 有1.21.1 |
 
