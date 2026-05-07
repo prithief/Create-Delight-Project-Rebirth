@@ -30,6 +30,8 @@
 !/tacz/**
 !/minemenu/
 !/minemenu/**
+!/PCL/
+!/PCL/**
 
 # Runtime/downloaded artifacts must not be distributed through packwiz index.
 mods/*.jar

@@ -1,6 +1,14 @@
 hash-format = "sha256"
 
 [[files]]
+file = "PCL/Logo.png"
+hash = "fe45547e7d523993ca305d0deb822aa38f93b90da3c189ee2e1afae53df21ca1"
+
+[[files]]
+file = "PCL/Setup.ini"
+hash = "cae8bb4758b90efca5f631dd68cbaeb07b5e1de1515ce4106cd53f19813385f8"
+
+[[files]]
 file = "icon.png"
 hash = "fe45547e7d523993ca305d0deb822aa38f93b90da3c189ee2e1afae53df21ca1"
 
