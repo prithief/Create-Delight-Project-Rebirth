@@ -17,6 +17,10 @@
 !/config/
 !/config/**
 /config/*
+!/config/jei/
+!/config/jei/**
+/config/jei/*
+!/config/jei/jei-client.ini
 !/defaultconfigs/
 !/defaultconfigs/**
 /defaultconfigs/*

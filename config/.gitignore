@@ -1,2 +1,5 @@
 /*
 !/.gitignore
+!/jei/
+/jei/*
+!/jei/jei-client.ini
