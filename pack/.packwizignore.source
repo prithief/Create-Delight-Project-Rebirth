@@ -1,6 +1,7 @@
 # Extra packwiz distribution exclusions.
 # devtool builds the positive allowlist from Git-visible files under:
-# PCL, config, defaultconfigs, kubejs, minemenu, mods, tacz, and selected pack/ payload files.
+# config, defaultconfigs, kubejs, minemenu, mods, tacz, generated release-root files,
+# and selected pack/ payload files.
 
 # Local bookkeeping inside otherwise allowed directories.
 **/.gitignore

@@ -14,7 +14,7 @@ AI agent 修改 packwiz 元数据前，也应该阅读 `.agents/skills/packwiz-m
 devtool.bat prepare-pack
 ```
 
-该命令会从 `pack/` 模板生成根目录 `pack.toml`、`index.toml`、`.packwizignore`、图标、启动脚本和变量文件。这些是本地生成文件，不提交。
+该命令会从 `pack/` 模板生成根目录 `pack.toml`、`index.toml`、`.packwizignore`、图标、启动脚本、变量文件和 `PCL/` 启动器配置。这些是本地生成文件，不提交。
 
 4. 双击或运行根目录开发工具：
 
@@ -111,7 +111,7 @@ git status --short --untracked-files=all
 git diff -- pack mods
 ```
 
-应该提交的是 `mods/*.pw.toml`、`pack/` 模板，以及确认要共享的 `config/`、`defaultconfigs/`、`kubejs/` 等源码文件。不要提交根目录生成的 `pack.toml`、`index.toml`、`.packwizignore`、`mods/*.jar`、导出 zip、`.mrpack`、NeoForge 运行文件、世界、日志或本地配置。
+应该提交的是 `mods/*.pw.toml`、`pack/` 模板，以及确认要共享的 `config/`、`defaultconfigs/`、`kubejs/` 等源码文件。不要提交根目录生成的 `pack.toml`、`index.toml`、`.packwizignore`、`PCL/`、`mods/*.jar`、导出 zip、`.mrpack`、NeoForge 运行文件、世界、日志或本地配置。
 
 安装/同步 packwiz 元数据声明的本地 mod 文件：
 

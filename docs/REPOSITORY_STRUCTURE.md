@@ -4,7 +4,7 @@
 
 ## 应提交
 
-- `pack/`: 发布根目录模板。`pack/pack.toml`、`pack/.packwizignore.source`、`pack/icon.png`、`pack/server-icon.png`、`pack/start.bat`、`pack/start.sh`、`pack/variables.txt` 会由 `devtool.bat prepare-pack` / packwiz 操作同步或生成到根目录。
+- `pack/`: 发布根目录模板。`pack/pack.toml`、`pack/.packwizignore.source`、`pack/icon.png`、`pack/server-icon.png`、`pack/start.bat`、`pack/start.sh`、`pack/variables.txt`、`pack/PCL/` 会由 `devtool.bat prepare-pack` / packwiz 操作同步或生成到根目录。
 - `mods/*.pw.toml`: packwiz mod 描述文件。
 - `resourcepacks/*.pw.toml`、`shaderpacks/*.pw.toml`: packwiz 管理的资源包/光影包描述文件。
 - `config/`、`defaultconfigs/`: 确认需要团队共享的配置。
@@ -26,7 +26,7 @@
 - `libraries/`, `versions/`, `logs/`, `crash-reports/`, `saves/`, `world*`
 - 本地服务端状态，如 `server.properties`、`eula.txt`、`user_jvm_args.txt`
 - `scripts/bin/` 下下载的其它工具二进制，已允许的 `scripts/bin/packwiz.exe` 和 `scripts/bin/packwiz-installer-bootstrap.jar` 除外
-- 根目录 `pack.toml`、`index.toml`、`.packwizignore`、`icon.png`、`server-icon.png`、`start.bat`、`start.sh`、`variables.txt`。这些由 `devtool.bat prepare-pack` / `refresh` 从 `pack/` 模板生成。
+- 根目录 `pack.toml`、`index.toml`、`.packwizignore`、`icon.png`、`server-icon.png`、`start.bat`、`start.sh`、`variables.txt`、`PCL/`。这些由 `devtool.bat prepare-pack` / `refresh` 从 `pack/` 模板生成。
 
 ## 原则
 

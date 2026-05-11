@@ -45,7 +45,9 @@ $PackRootTemplateFiles = @(
   "server-icon.png",
   "start.bat",
   "start.sh",
-  "variables.txt"
+  "variables.txt",
+  "PCL\Logo.png",
+  "PCL\Setup.ini"
 )
 $PackwizIgnoreSource = Join-Path $PackTemplateDir ".packwizignore.source"
 $PackwizRootReleaseFiles = @(
@@ -53,7 +55,12 @@ $PackwizRootReleaseFiles = @(
   "server-icon.png",
   "start.bat",
   "start.sh",
-  "variables.txt"
+  "variables.txt",
+  "PCL/Logo.png",
+  "PCL/Setup.ini"
+)
+$PackwizRootReleaseDirs = @(
+  "PCL"
 )
 $PackwizPackPayloadFiles = @(
   "pack/icon.png",
@@ -67,7 +74,6 @@ $PackwizTaczPayloadFiles = @(
   "tacz/Create Armorer-v1.2.0+1.21.1.zip"
 )
 $PackwizPublishRoots = @(
-  "PCL",
   "config",
   "defaultconfigs",
   "kubejs",
@@ -566,6 +572,9 @@ function Sync-PackwizIgnore {
 
   $lines.Add("")
   $lines.Add("# Generated release-root files copied from pack/.")
+  foreach ($relativePath in $PackwizRootReleaseDirs) {
+    Add-PackwizAllowTree -Lines $lines -Seen $seen -RelativePath $relativePath
+  }
   foreach ($relativePath in $PackwizRootReleaseFiles) {
     Add-PackwizAllowFile -Lines $lines -Seen $seen -RelativePath $relativePath
   }
@@ -747,7 +756,7 @@ function Test-PackwizPublishPath {
     return $false
   }
 
-  if ($path -match "^(PCL|config|defaultconfigs|kubejs|minemenu)/") {
+  if ($path -match "^(config|defaultconfigs|kubejs|minemenu)/") {
     return $true
   }
 
@@ -1584,7 +1593,7 @@ function Test-Repository {
     }
   }
 
-  $required = @("pack\pack.toml", "pack\.packwizignore.source", "pack\icon.png", "pack\server-icon.png", "pack\start.bat", "pack\start.sh", "pack\variables.txt", "pack.toml", "index.toml", ".packwizignore", ".gitignore")
+  $required = @("pack\pack.toml", "pack\.packwizignore.source", "pack\icon.png", "pack\server-icon.png", "pack\start.bat", "pack\start.sh", "pack\variables.txt", "pack\PCL\Logo.png", "pack\PCL\Setup.ini", "pack.toml", "index.toml", ".packwizignore", ".gitignore", "PCL\Logo.png", "PCL\Setup.ini")
   foreach ($path in $required) {
     $fullPath = Join-Path $RepoRoot $path
     if (Test-Path $fullPath) {

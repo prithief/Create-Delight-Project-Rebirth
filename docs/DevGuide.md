@@ -45,7 +45,7 @@ devtool.bat check
 
 - `mods/*.jar` 不提交。
 - `mods/*.pw.toml` 提交。
-- `pack/` 中的发布模板提交；根目录 `pack.toml`、`index.toml`、`.packwizignore`、`icon.png`、`server-icon.png`、`start.bat`、`start.sh`、`variables.txt` 由 `devtool.bat prepare-pack` 或 packwiz 操作生成，不提交。
+- `pack/` 中的发布模板提交；根目录 `pack.toml`、`index.toml`、`.packwizignore`、`icon.png`、`server-icon.png`、`start.bat`、`start.sh`、`variables.txt`、`PCL/` 由 `devtool.bat prepare-pack` 或 packwiz 操作生成，不提交。
 - `config/`、`defaultconfigs/` 只放确认要共享的配置。
 - `kubejs/` 只放已确认适配 1.21.1 NeoForge 和目标模组集合的脚本、数据与资源。
 - `scripts/bin/packwiz.exe` 和 `scripts/bin/packwiz-installer-bootstrap.jar` 是允许内置的二进制开发工具。
@@ -80,7 +80,7 @@ devtool.bat
 
 首次准备开发环境时：
 
-1. 运行一次 `devtool.bat prepare-pack`，把 `pack/` 模板展开到根目录并生成 `pack.toml`、`index.toml`、`.packwizignore` 等本地发布文件。
+1. 运行一次 `devtool.bat prepare-pack`，把 `pack/` 模板展开到根目录并生成 `pack.toml`、`index.toml`、`.packwizignore`、`PCL/` 等本地发布文件。
 2. 从开发群文件下载需要手动补齐的 mod jar。
 3. 把这些 jar 放进仓库根目录的 `mods/` 文件夹。
 4. 双击根目录的 `devtool.bat`。
@@ -98,7 +98,7 @@ devtool.bat
 - 新增直链或 GitHub Release 文件使用菜单 `9` 或 `10`。
 - 删除 mod 使用菜单 `11. 移除 packwiz 管理文件`，或命令 `devtool.bat remove-mod <name-or-metadata-file>`。菜单 `11` 只会修改 packwiz 清单；删除后必须再运行菜单 `12` 或 `13` 同步本地文件夹，旧 jar 才会从本机 `mods/` 中清掉。
 - `add-*`、`update`、`remove-mod` 会自动生成/刷新根目录 `pack.toml` 和 `index.toml`；之后运行 `devtool.bat install-files`。无桌面环境使用 `devtool.bat install-files-headless`；网络不稳时使用 `devtool.bat install-files-retry`。
-- 提交 `mods/*.pw.toml`、`pack/` 模板和需要共享的配置变化，不提交根目录生成的 `pack.toml`、`index.toml`、`.packwizignore` 或 `mods/*.jar`。
+- 提交 `mods/*.pw.toml`、`pack/` 模板和需要共享的配置变化，不提交根目录生成的 `pack.toml`、`index.toml`、`.packwizignore`、`PCL/` 或 `mods/*.jar`。
 
 ## 关于 modinstaller / 同步器
 
