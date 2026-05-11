@@ -1,0 +1,75 @@
+name: Todo Task
+description: 记录普通开发、整理、验证或发布待办
+title: "[Todo]: "
+labels:
+  - todo
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: 目标 / Goal
+      description: 用一句话说明这个待办完成后应该得到什么结果。
+      placeholder: 例如：补齐服务端启动说明，避免新服主漏掉 Java 21 要求。
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: 范围 / Area
+      description: 这个待办主要影响哪里？
+      options:
+        - 文档 / Docs
+        - 发布 / Release
+        - 仓库维护 / Repository
+        - packwiz 元数据 / Packwiz metadata
+        - 配置 / Config
+        - KubeJS
+        - 测试验证 / Verification
+        - 其他 / Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 优先级 / Priority
+      options:
+        - P0 - 阻塞 playable / Blocking
+        - P1 - 当前里程碑需要 / Current milestone
+        - P2 - 有空处理 / Backlog
+        - P3 - 想法记录 / Idea
+    validations:
+      required: true
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: 子任务 / Checklist
+      description: 拆成可勾选的小步骤。
+      value: |
+        - [ ] 
+        - [ ] 
+    validations:
+      required: true
+
+  - type: textarea
+    id: done
+    attributes:
+      label: 完成标准 / Definition of Done
+      description: 写清楚满足什么条件可以关闭 issue。
+      placeholder: |
+        - 相关文件已提交
+        - 本地检查通过
+        - 需要的截图、日志或说明已补充
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: 备注 / Notes
+      description: 链接、上下文、相关 issue 或临时结论。
+    validations:
+      required: false
+
