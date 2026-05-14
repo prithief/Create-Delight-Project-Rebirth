@@ -99,16 +99,16 @@ if not exist "!NEOFORGE_ARGS!" (
 )
 
 if not exist user_jvm_args.txt (
-    echo !JVM_ARGS! > user_jvm_args.txt
+    > user_jvm_args.txt echo !JVM_ARGS!
 )
 
 if /I "!ACCEPT_EULA!"=="true" (
     if not exist eula.txt (
-        echo eula=true > eula.txt
+        > eula.txt echo eula=true
     )
     findstr /I /C:"eula=true" eula.txt >nul 2>&1
     if errorlevel 1 (
-        echo eula=true > eula.txt
+        > eula.txt echo eula=true
     )
 ) else (
     if not exist eula.txt (
