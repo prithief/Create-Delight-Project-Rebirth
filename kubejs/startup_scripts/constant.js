@@ -1,1 +1,0 @@
-global.loadedmodlist = Platform.getList();
