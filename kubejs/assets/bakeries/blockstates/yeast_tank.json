@@ -1,0 +1,16 @@
+﻿{
+    "variants":  {
+                     "yeast=3":  {
+                                     "model":  "bakeries:block/yeast_tank"
+                                 },
+                     "yeast=2":  {
+                                     "model":  "bakeries:block/yeast_tank_2"
+                                 },
+                     "yeast=1":  {
+                                     "model":  "bakeries:block/yeast_tank_3"
+                                 },
+                     "yeast=0":  {
+                                     "model":  "bakeries:block/yeast_tank_3"
+                                 }
+                 }
+}

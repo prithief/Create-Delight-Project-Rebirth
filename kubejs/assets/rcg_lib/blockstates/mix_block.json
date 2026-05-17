@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "rcg_lib:block/mix_block_empty",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "rcg_lib:block/mix_block_empty"
+    },
+    "facing=south": {
+      "model": "rcg_lib:block/mix_block_empty",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "rcg_lib:block/mix_block_empty",
+      "y": 270
+    }
+  }
+}

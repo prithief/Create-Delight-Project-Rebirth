@@ -1,0 +1,124 @@
+﻿{
+    "variants":  {
+                     "cut=2,facing=north,pile=1":  {
+                                                       "model":  "luncheonmeatsdelight:block/luncheon_meat_can",
+                                                       "y":  180
+                                                   },
+                     "cut=2,facing=north,pile=2":  {
+                                                       "model":  "luncheonmeatsdelight:block/luncheon_meat_can_pile_1",
+                                                       "y":  180
+                                                   },
+                     "cut=2,facing=north,pile=3":  {
+                                                       "model":  "luncheonmeatsdelight:block/luncheon_meat_can_pile_2",
+                                                       "y":  180
+                                                   },
+                     "cut=2,facing=north,pile=4":  {
+                                                       "model":  "luncheonmeatsdelight:block/luncheon_meat_can_pile_3",
+                                                       "y":  180
+                                                   },
+                     "cut=1,facing=north,pile=1":  {
+                                                       "model":  "luncheonmeatsdelight:block/luncheon_meat_can_open",
+                                                       "y":  180
+                                                   },
+                     "cut=2,facing=south,pile=1":  {
+                                                       "model":  "luncheonmeatsdelight:block/luncheon_meat_can"
+                                                   },
+                     "cut=2,facing=south,pile=2":  {
+                                                       "model":  "luncheonmeatsdelight:block/luncheon_meat_can_pile_1"
+                                                   },
+                     "cut=2,facing=south,pile=3":  {
+                                                       "model":  "luncheonmeatsdelight:block/luncheon_meat_can_pile_2"
+                                                   },
+                     "cut=2,facing=south,pile=4":  {
+                                                       "model":  "luncheonmeatsdelight:block/luncheon_meat_can_pile_3"
+                                                   },
+                     "cut=1,facing=south,pile=1":  {
+                                                       "model":  "luncheonmeatsdelight:block/luncheon_meat_can_open"
+                                                   },
+                     "cut=2,facing=west,pile=1":  {
+                                                      "model":  "luncheonmeatsdelight:block/luncheon_meat_can",
+                                                      "y":  90
+                                                  },
+                     "cut=2,facing=west,pile=2":  {
+                                                      "model":  "luncheonmeatsdelight:block/luncheon_meat_can_pile_1",
+                                                      "y":  90
+                                                  },
+                     "cut=2,facing=west,pile=3":  {
+                                                      "model":  "luncheonmeatsdelight:block/luncheon_meat_can_pile_2",
+                                                      "y":  90
+                                                  },
+                     "cut=2,facing=west,pile=4":  {
+                                                      "model":  "luncheonmeatsdelight:block/luncheon_meat_can_pile_3",
+                                                      "y":  90
+                                                  },
+                     "cut=1,facing=west,pile=1":  {
+                                                      "model":  "luncheonmeatsdelight:block/luncheon_meat_can_open",
+                                                      "y":  90
+                                                  },
+                     "cut=2,facing=east,pile=1":  {
+                                                      "model":  "luncheonmeatsdelight:block/luncheon_meat_can",
+                                                      "y":  270
+                                                  },
+                     "cut=2,facing=east,pile=2":  {
+                                                      "model":  "luncheonmeatsdelight:block/luncheon_meat_can_pile_1",
+                                                      "y":  270
+                                                  },
+                     "cut=2,facing=east,pile=3":  {
+                                                      "model":  "luncheonmeatsdelight:block/luncheon_meat_can_pile_2",
+                                                      "y":  270
+                                                  },
+                     "cut=2,facing=east,pile=4":  {
+                                                      "model":  "luncheonmeatsdelight:block/luncheon_meat_can_pile_3",
+                                                      "y":  270
+                                                  },
+                     "cut=1,facing=east,pile=1":  {
+                                                      "model":  "luncheonmeatsdelight:block/luncheon_meat_can_open",
+                                                      "y":  90
+                                                  },
+                     "cut=1,facing=east,pile=2":  {
+                                                      "model":  "luncheonmeatsdelight:block/luncheon_meat_can_pile_1",
+                                                      "y":  270
+                                                  },
+                     "cut=1,facing=north,pile=3":  {
+                                                       "model":  "luncheonmeatsdelight:block/luncheon_meat_can_pile_2",
+                                                       "y":  180
+                                                   },
+                     "cut=1,facing=north,pile=4":  {
+                                                       "model":  "luncheonmeatsdelight:block/luncheon_meat_can_pile_3",
+                                                       "y":  180
+                                                   },
+                     "cut=1,facing=north,pile=2":  {
+                                                       "model":  "luncheonmeatsdelight:block/luncheon_meat_can_pile_1",
+                                                       "y":  180
+                                                   },
+                     "cut=1,facing=west,pile=2":  {
+                                                      "model":  "luncheonmeatsdelight:block/luncheon_meat_can_pile_1",
+                                                      "y":  90
+                                                  },
+                     "cut=1,facing=west,pile=3":  {
+                                                      "model":  "luncheonmeatsdelight:block/luncheon_meat_can_pile_2",
+                                                      "y":  90
+                                                  },
+                     "cut=1,facing=east,pile=3":  {
+                                                      "model":  "luncheonmeatsdelight:block/luncheon_meat_can_pile_2",
+                                                      "y":  270
+                                                  },
+                     "cut=1,facing=west,pile=4":  {
+                                                      "model":  "luncheonmeatsdelight:block/luncheon_meat_can_pile_3",
+                                                      "y":  90
+                                                  },
+                     "cut=1,facing=east,pile=4":  {
+                                                      "model":  "luncheonmeatsdelight:block/luncheon_meat_can_pile_3",
+                                                      "y":  270
+                                                  },
+                     "cut=1,facing=south,pile=4":  {
+                                                       "model":  "luncheonmeatsdelight:block/luncheon_meat_can_pile_3"
+                                                   },
+                     "cut=1,facing=south,pile=3":  {
+                                                       "model":  "luncheonmeatsdelight:block/luncheon_meat_can_pile_2"
+                                                   },
+                     "cut=1,facing=south,pile=2":  {
+                                                       "model":  "luncheonmeatsdelight:block/luncheon_meat_can_pile_1"
+                                                   }
+                 }
+}
