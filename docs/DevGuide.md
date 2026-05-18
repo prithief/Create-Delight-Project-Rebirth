@@ -272,6 +272,7 @@ ServerEvents.recipes((event) => {
 - 只迁移同 mod id、同配置项语义明确的内容。
 - 服务端默认配置放 `defaultconfigs/`。
 - 客户端或通用配置放 `config/`，但要确认是否适合团队共享。
+- FancyMenu 的窗口标题、窗口图标等全局显示项在 `config/fancymenu/options.txt` 中维护；主菜单布局和图片资源分别在 `config/fancymenu/customization/` 与 `config/fancymenu/assets/` 中维护。
 
 ## 启动脚本
 
