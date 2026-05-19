@@ -38,10 +38,7 @@
     {
       "name": "mode",
       "role": "other",
-      "type": {
-        "type": "enum",
-        "enum": "appeng.recipes.entropy.EntropyMode"
-      }
+      "type": "string"
     },
     {
       "name": "output",
