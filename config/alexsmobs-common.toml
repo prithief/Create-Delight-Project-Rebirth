@@ -290,7 +290,7 @@
 	#Spawn Weight, added to a pool of other mobs for each biome. Higher number = higher chance of spawning. 0 = disable spawn
 	# Default: 8
 	# Range: 0 ~ 1000
-	caveCentipedeSpawnWeight = 8
+	caveCentipedeSpawnWeight = 0
 	#Random roll chance to enable mob spawning. Higher number = lower chance of spawning
 	# Default: 1
 	# Range: > 0
@@ -810,7 +810,7 @@
 	#Spawn Weight, added to a pool of other mobs for each biome. Higher number = higher chance of spawning. 0 = disable spawn
 	# Default: 5
 	# Range: 0 ~ 1000
-	murmurSpawnWeight = 5
+	murmurSpawnWeight = 0
 	#Random roll chance to enable mob spawning. Higher number = lower chance of spawning
 	# Default: 1
 	# Range: > 0
