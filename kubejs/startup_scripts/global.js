@@ -11,3 +11,22 @@ global.hasAllMods = function (modIds) {
 global.hasAnyMod = function (modIds) {
   return modIds.some((modId) => global.hasMod(modId));
 };
+
+const BuiltInRegistries = Java.loadClass('net.minecraft.core.registries.BuiltInRegistries');
+const ResourceLocation = Java.loadClass('net.minecraft.resources.ResourceLocation');
+
+global.registryIdExists = function (registry, id) {
+  return registry.containsKey(ResourceLocation.parse(id));
+};
+
+global.itemExists = function (id) {
+  return global.registryIdExists(BuiltInRegistries.ITEM, id);
+};
+
+global.blockExists = function (id) {
+  return global.registryIdExists(BuiltInRegistries.BLOCK, id);
+};
+
+global.fluidExists = function (id) {
+  return global.registryIdExists(BuiltInRegistries.FLUID, id);
+};
