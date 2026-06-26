@@ -1,7 +1,5 @@
 (() => {
-  const mods = Platform.getList();
-
-  if (!mods.contains('alexscaves') || !mods.contains('cpapireforged')) {
+  if (!global.hasAllMods(['alexscaves', 'cpapireforged'])) {
     return;
   }
 
@@ -15,39 +13,22 @@
   const exists = (registry, value) => registry.containsKey(id(value));
   const get = (registry, value) => registry.get(id(value));
 
+  /** @type {{dimension: string, frame: string, item?: string, fluid?: string, water?: boolean, color: [number, number, number]}[]} */
   const portals = [
     {
-      dimension: 'createdelightcore:magnetic_caves_dimension',
-      frame: 'create_new_age:magnetite_block',
-      item: 'create_new_age:overcharged_diamond',
-      color: [112, 78, 173],
-    },
-    {
-      dimension: 'createdelightcore:abyssal_chasm_dimension',
+      dimension: 'createdelightcore:enceladus_dimension',
       frame: 'minecraft:dark_prismarine',
       water: true,
       color: [26, 29, 35],
     },
     {
-      dimension: 'createdelightcore:forlorn_hollows_dimension',
+      dimension: 'createdelightcore:pluto_dimension',
       frame: 'minecraft:packed_mud',
       item: 'art_of_forging:shards_of_malice',
       color: [174, 0, 0],
     },
     {
-      dimension: 'createdelightcore:primordial_caves_dimension',
-      frame: 'create:limestone',
-      item: 'minecraft:bone',
-      color: [161, 119, 51],
-    },
-    {
-      dimension: 'createdelightcore:toxic_caves_dimension',
-      frame: 'alexscaves:sulfur',
-      item: 'alexscaves:sulfur_dust',
-      color: [102, 150, 54],
-    },
-    {
-      dimension: 'createdelightcore:candy_cavity_dimension',
+      dimension: 'createdelightcore:ceres_dimension',
       frame: 'create_confectionery:candy_cane_block',
       fluid: 'create_confectionery:caramel',
       color: [216, 131, 51],
