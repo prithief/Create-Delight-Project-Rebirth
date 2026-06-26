@@ -89,7 +89,31 @@ minecraft_server*.jar
 *.lock
 *.tmp
 
-# Local server test instance runtime files.
+# Local dedicated test server runtime files.
+test_server/
+test_server/mods/*.jar
+test_server/mods/*.jar.disabled
+test_server/resourcepacks/*.zip
+test_server/shaderpacks/*.zip
+test_server/logs/
+test_server/crash-reports/
+test_server/world/
+test_server/world*/
+test_server/libraries/
+test_server/versions/
+test_server/downloads/
+test_server/server.properties
+test_server/eula.txt
+test_server/user_jvm_args.txt
+test_server/run.bat
+test_server/run.sh
+test_server/neoforge.jar
+test_server/minecraft_server*.jar
+test_server/*.log
+test_server/*.lock
+test_server/*.tmp
+
+# Legacy local test server directory; keep ignored during migration.
 server/
 server/mods/*.jar
 server/mods/*.jar.disabled
