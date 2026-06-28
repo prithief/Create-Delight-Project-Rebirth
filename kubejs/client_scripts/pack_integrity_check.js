@@ -22,15 +22,13 @@
   const PACK_INTEGRITY_WARNING_HIGHLIGHT_TEXT =
     '我们不保证这种情况下整合包仍能稳定游玩，也没有能力处理这种情况下的问题求助和bug反馈。';
 
-  let packIntegrityResult = null;
-  let packIntegrityState = null;
-  let packIntegrityShouldWarn = false;
-  let packIntegrityWarningOpen = false;
-  let packIntegrityClient = null;
-  let packIntegrityPreviousScreen = null;
-  let packIntegrityWarningScreen = null;
-  let packIntegrityStateParent = null;
-  let packIntegrityWarningComponent = PackIntegrityComponent.literal(PACK_INTEGRITY_WARNING_TEXT);
+  const packIntegrityState = {
+    result: null,
+    shouldWarn: false,
+    warningOpen: false,
+    titleScreenHandled: false,
+    warningComponent: PackIntegrityComponent.literal(PACK_INTEGRITY_WARNING_TEXT),
+  };
 
   const readPackIntegrityJson = (path, fallback) => {
     const json = JsonIO.readJson(path);
@@ -60,21 +58,13 @@
   };
 
   const writePackIntegrityState = (result) => {
-    packIntegrityStateParent = PACK_INTEGRITY_STATE_PATH.getParent();
-    if (packIntegrityStateParent != null) {
-      PackIntegrityKubeJSPaths.dir(packIntegrityStateParent);
-    }
-
-    JsonIO.write(
-      PACK_INTEGRITY_STATE_PATH,
-      JsonUtils.of({
-        acknowledgedFingerprint: result.fingerprint,
-        acknowledgedAt: new Date().toISOString(),
-        side: result.side,
-        missingModIds: result.missingModIds,
-        extraModIds: result.extraModIds,
-      })
-    );
+    writePackIntegrityJson(PACK_INTEGRITY_STATE_PATH, {
+      acknowledgedFingerprint: result.fingerprint,
+      acknowledgedAt: new Date().toISOString(),
+      side: result.side,
+      missingModIds: result.missingModIds,
+      extraModIds: result.extraModIds,
+    });
   };
 
   const normalizePackIntegrityList = (value) => {
@@ -240,50 +230,57 @@
 
   const updatePackIntegrityWarningState = (result) => {
     if (result == null || !result.hasDifferences || !result.fingerprint) {
-      packIntegrityShouldWarn = false;
+      packIntegrityState.shouldWarn = false;
       return;
     }
 
-    packIntegrityWarningComponent = createPackIntegrityWarningComponent(result);
-    packIntegrityState = readPackIntegrityState();
-    packIntegrityShouldWarn = packIntegrityState.acknowledgedFingerprint !== result.fingerprint;
+    const acknowledgedState = readPackIntegrityState();
+    packIntegrityState.warningComponent = createPackIntegrityWarningComponent(result);
+    packIntegrityState.shouldWarn =
+      acknowledgedState.acknowledgedFingerprint !== result.fingerprint;
   };
 
   const isTitleScreen = (screen) =>
     screen != null && String(screen).startsWith('net.minecraft.client.gui.screens.TitleScreen@');
 
   try {
-    packIntegrityResult = loadPackIntegrityResult();
-    writeAndLogPackIntegrityResult(packIntegrityResult);
-    updatePackIntegrityWarningState(packIntegrityResult);
+    packIntegrityState.result = loadPackIntegrityResult();
+    writeAndLogPackIntegrityResult(packIntegrityState.result);
+    updatePackIntegrityWarningState(packIntegrityState.result);
   } catch (error) {
     console.warn(`[Create Delight Pack Integrity] Integrity check failed: ${error}`);
   }
 
   RenderJSEvents.onScreenPostRender((event) => {
-    if (!packIntegrityShouldWarn || packIntegrityWarningOpen || !isTitleScreen(event.screen)) {
+    if (
+      !packIntegrityState.shouldWarn ||
+      packIntegrityState.warningOpen ||
+      packIntegrityState.titleScreenHandled ||
+      !isTitleScreen(event.screen)
+    ) {
       return;
     }
 
-    packIntegrityClient = event.client;
-    packIntegrityPreviousScreen = event.screen;
-    packIntegrityWarningOpen = true;
+    const client = event.client;
+    const previousScreen = event.screen;
+    packIntegrityState.titleScreenHandled = true;
+    packIntegrityState.warningOpen = true;
 
-    packIntegrityWarningScreen = new PackIntegrityConfirmScreen(
+    const warningScreen = new PackIntegrityConfirmScreen(
       (confirmed) => {
         if (confirmed) {
-          writePackIntegrityState(packIntegrityResult);
+          writePackIntegrityState(packIntegrityState.result);
         }
-        packIntegrityShouldWarn = false;
-        packIntegrityWarningOpen = false;
-        packIntegrityClient.setScreen(packIntegrityPreviousScreen);
+        packIntegrityState.shouldWarn = false;
+        packIntegrityState.warningOpen = false;
+        client.setScreen(previousScreen);
       },
       PackIntegrityComponent.literal('整合包模组列表已改变'),
-      packIntegrityWarningComponent,
+      packIntegrityState.warningComponent,
       PackIntegrityComponent.literal('我已知悉'),
       PackIntegrityComponent.literal('关闭')
     );
 
-    packIntegrityClient.setScreen(packIntegrityWarningScreen);
+    client.setScreen(warningScreen);
   });
 })();
