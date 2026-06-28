@@ -565,6 +565,16 @@ function New-IntegrityManifest {
   Write-Info ("common={0}, client={1}, server={2}" -f $manifest.expectedModIds.common.Count, $manifest.expectedModIds.client.Count, $manifest.expectedModIds.server.Count)
 }
 
+function Update-CoreBeforeSync {
+  Write-Info "同步前自动更新 create-delight-core"
+  try {
+    Invoke-BkmpwPackCommand "update" @("create-delight-core")
+  }
+  catch {
+    Write-Warn ("create-delight-core 自动更新失败，继续执行后续操作：" + $_.Exception.Message)
+  }
+}
+
 function Read-BkmpwExtraArgs {
   param([string] $Prompt = "额外 bkmpw 参数，留空表示无")
 
@@ -741,6 +751,7 @@ function Start-DevMenu {
           $args = @()
           if (-not [string]::IsNullOrWhiteSpace($attempts)) { $args += $attempts }
           if (-not [string]::IsNullOrWhiteSpace($delay)) { $args += $delay }
+          Update-CoreBeforeSync
           Invoke-BkmpwPackCommand "install-files-headless" $args
           Pause-Menu
         }
@@ -750,6 +761,7 @@ function Start-DevMenu {
           $args = @()
           if (-not [string]::IsNullOrWhiteSpace($jobs)) { $args += $jobs }
           if ($force -match "^(y|yes)$") { $args += "--force" }
+          Update-CoreBeforeSync
           Invoke-BkmpwPackCommand "download-files" $args
           Pause-Menu
         }
@@ -798,10 +810,10 @@ switch ($Command) {
   "add-url" { Invoke-BkmpwPackCommand "add-url" $Rest; Invoke-BkmpwPackCommand "refresh" }
   "add-github" { Invoke-BkmpwPackCommand "add-github" (@("both") + $Rest); Invoke-BkmpwPackCommand "refresh" }
   "remove-mod" { Invoke-BkmpwPackCommand "remove" $Rest; Invoke-BkmpwPackCommand "refresh"; Write-Warn "已更新清单。请继续运行 devtool.bat install-files，同步本地托管文件。" }
-  "install-files" { Invoke-BkmpwPackCommand "install-files-headless" $Rest }
-  "install-files-headless" { Invoke-BkmpwPackCommand "install-files-headless" $Rest }
-  "install-files-retry" { Invoke-BkmpwPackCommand "install-files-retry" $Rest }
-  "download-files" { Invoke-BkmpwPackCommand "download-files" $Rest }
+  "install-files" { Update-CoreBeforeSync; Invoke-BkmpwPackCommand "install-files-headless" $Rest }
+  "install-files-headless" { Update-CoreBeforeSync; Invoke-BkmpwPackCommand "install-files-headless" $Rest }
+  "install-files-retry" { Update-CoreBeforeSync; Invoke-BkmpwPackCommand "install-files-retry" $Rest }
+  "download-files" { Update-CoreBeforeSync; Invoke-BkmpwPackCommand "download-files" $Rest }
   "modlist" { Invoke-BkmpwPackCommand "modlist" $Rest }
   "generate-integrity-manifest" { New-IntegrityManifest }
   "export-curseforge" { New-IntegrityManifest; Invoke-BkmpwPackCommand "refresh"; Invoke-BkmpwPackCommand "export-curseforge" $Rest }
